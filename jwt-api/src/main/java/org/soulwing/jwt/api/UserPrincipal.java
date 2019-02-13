@@ -35,7 +35,7 @@ public interface UserPrincipal extends Principal, Serializable {
   /**
    * Gets the specified claim.
    * @param name name of the the claim to retrieve
-   * @return a claim object (never {@code null}; use {@link Claim#isNull}
+   * @return a claim object; never {@code null}; use {@link Claim#isNull}
    *    to check whether a value was specified for the given claim
    */
   Claim getClaim(String name);
@@ -44,9 +44,9 @@ public interface UserPrincipal extends Principal, Serializable {
    * Tests whether this principal has the specified claim.
    * <p>
    * This is effectively a convenient alternative to
-   * {@link #getClaim(String)}.{@link Claim#isNull}
+   * {@code getClaim(name).isNull()}
    * @param name name of the claim to test
-   * @return {@code true} if the a claim with given name is present
+   * @return {@code true} if a claim with given name is present
    *    in this principal object
    */
   boolean hasClaim(String name);
