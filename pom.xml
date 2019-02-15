@@ -19,6 +19,7 @@
     <version.org.wildfly>12.0.0.Final</version.org.wildfly>
     <version.org.wildfly.core>4.0.0.Final</version.org.wildfly.core>
     <version.io.undertow>2.0.0.Final</version.io.undertow>
+    <version.com.auth0>3.7.0</version.com.auth0>
     <module.name>cas</module.name>
   </properties>
   <scm>
@@ -66,6 +67,11 @@
         <groupId>io.undertow</groupId>
         <artifactId>undertow-servlet</artifactId>
         <version>${version.io.undertow}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.auth0</groupId>
+        <artifactId>java-jwt</artifactId>
+        <version>${version.com.auth0}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

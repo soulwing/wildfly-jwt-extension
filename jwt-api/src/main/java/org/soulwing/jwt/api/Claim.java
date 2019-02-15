@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * An instance of this type represents the value associated with a
@@ -70,16 +71,14 @@ public interface Claim {
   /**
    * Retrieves the value of this claim as a boolean.
    * @return boolean value or null if this claim has no value
-   * @throws ClassCastException if the value cannot be coerced to
-   *    a Boolean
+   * @throws ClassCastException if the value is not of boolean type
    */
   Boolean asBoolean();
 
   /**
    * Retrieves the value of this claim as an integer.
    * @return integer value or null if this claim has no value
-   * @throws ClassCastException if the value cannot be coerced to
-   *    an Integer
+   * @throws ClassCastException if the value cannot be coerced to an Integer
    */
   Integer asInt();
 
@@ -94,8 +93,7 @@ public interface Claim {
   /**
    * Retrieves the value of this claim as a double.
    * @return double value or null if this claim has no value
-   * @throws ClassCastException if the value cannot be coerced to
-   *    a Double
+   * @throws ClassCastException if the value cannot be coerced to a Double
    */
   Double asDouble();
 
@@ -106,7 +104,7 @@ public interface Claim {
    * of the NumericDate type described in the JWT specification
    * (i.e. a number of seconds since the epoch).
    * @return instant value or null if this claim has no value
-   * @throws ClassCastException if the value cannot be coerced to
+   * @throws ClassCastException if the value is not a Number
    *    a Number for conversion to an Instant
    */
   Instant asInstant();
@@ -118,8 +116,7 @@ public interface Claim {
    * of the NumericDate type described in the JWT specification
    * (i.e. a number of seconds since the epoch).
    * @return date value or null if this claim has no value
-   * @throws ClassCastException if the value cannot be coerced to
-   *    a Number for converstion to a Date.
+   * @throws ClassCastException if the value is not a Number
    */
   Date asDate();
 
@@ -148,7 +145,7 @@ public interface Claim {
    * @throws ClassCastException if the value is not of array type
    *    or if the values cannot be coerced to the given type
    */
-  <T> List<T> asList(Class<?> elementType);
+  <T> List<T> asList(Class<? extends T> elementType);
 
   /**
    * Retrieves the value of this claim as a generic set.
@@ -165,7 +162,7 @@ public interface Claim {
    * @throws ClassCastException if the value is not of array type
    *    or if the values cannot be coerced to the given type
    */
-  <T> Set<T> asSet(Class<?> elementType);
+  <T> Set<T> asSet(Class<? extends T> elementType);
 
   /**
    * Retrieves the value of this claim as a generic map.
@@ -175,32 +172,48 @@ public interface Claim {
   Map<String, ?> asMap();
 
   /**
-   * Retrieves the value of this claim as a generic map.
-   * @return map of values or null if this claim has no value
-   * @throws ClassCastException if the value is not of object type
-   *    or if the values cannot be coerced to the given type
-   */
-  <T> Map<String, T> asMap(Class<?> elementType);
-
-  /**
-   * Retrieves the value of this claim as an arbitrary value type.
+   * Retrieves the value of this claim as an instance of an
+   * arbitrary value type.
    * <p>
    * Value type must be a public type that has either a public
    * constructor with a single argument or a public static method
    * with a single argument and a return type that is assignable to
-   * type T. The argument type must be one of String, Boolean,
+   * type V. The argument type must be one of String, Boolean,
    * Number, Collection, Map, or Object. If the argument type is
    * other than Object, the claim value will first be coerced to the
    * given type. If the argument type is Object, no prior coercion
    * will be performed.
    * @param valueType value type as a class
-   * @param <T> value type
-   * @return an instance of type T or null if the claim has no value
+   * @param <V> value type
+   * @return an instance of type V or null if the claim has no value
    * @throws ClassCastException if the value is cannot be coerced to
    *    the given type
    * @throws IllegalArgumentException if {@code valueType} is not
    *    a supportable type.
    */
-  <T> T as(Class<?> valueType);
+  <V> V as(Class<? extends V> valueType);
+
+  /**
+   * Retrieves the value of this claim as an instance of an arbitrary
+   * value type.
+   * <p>
+   * The specified source type must be one of String, Boolean,
+   * Number, Collection, Map, or Object. If the source type is
+   * other than Object, the claim value will first be coerced to the
+   * given type. If the argument type is Object, no prior coercion
+   * will be performed.
+   * <p>
+   * @param converter converter function
+   * @param sourceType source type as a class; must be one of String,
+   *    Boolean, Number, Collection, Map, or Object
+   * @param <V> value type
+   * @param <T> source type
+   * @return an instance of type V or null if the claim has no value
+   * @throws ClassCastException if the claim value is cannot be
+   *    coerced to the given value type
+   * @throws IllegalArgumentException if {@code sourceType} is not
+   *    a supported type.
+   */
+  <T, V> V as(Function<T, V> converter, Class<? extends T> sourceType);
 
 }
