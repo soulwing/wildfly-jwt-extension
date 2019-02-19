@@ -19,6 +19,7 @@
 package org.soulwing.jwt.jaas;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -359,6 +360,68 @@ public class TestDelegatingClaim {
         decodedToken(newToken(b -> b.withClaim(CLAIM, "string")))
             .getClaim(CLAIM));
     claim.asDate();
+  }
+
+  @Test
+  public void testAsLArrayOfStringsWithNullClaim() throws Exception {
+    final DelegatingClaim claim = new DelegatingClaim(decodedToken(newToken())
+        .getClaim(CLAIM));
+
+    assertThat(claim.asArray(String.class), is(nullValue()));
+  }
+
+  @Test
+  public void testAsArrayOfStringsWithStrings() throws Exception {
+    final DelegatingClaim claim = new DelegatingClaim(
+        decodedToken(newToken(b ->
+            b.withArrayClaim(CLAIM, new String[] { "a", "b", "c" })))
+            .getClaim(CLAIM));
+    assertThat(claim.asArray(String.class), arrayContaining("a", "b", "c"));
+  }
+
+  @Test
+  public void testAsArrayOfStringsWithInts() throws Exception {
+    final DelegatingClaim claim = new DelegatingClaim(
+        decodedToken(newToken(b ->
+            b.withArrayClaim(CLAIM, new Integer[] { 0, 1, 2 })))
+            .getClaim(CLAIM));
+    assertThat(claim.asArray(String.class), arrayContaining("0", "1", "2"));
+  }
+
+  @Test
+  public void testAsArrayOfStringsWithLongs() throws Exception {
+    final DelegatingClaim claim = new DelegatingClaim(
+        decodedToken(newToken(b ->
+            b.withArrayClaim(CLAIM, new Long[] { 0L, 1L, 2L })))
+            .getClaim(CLAIM));
+    assertThat(claim.asArray(String.class), arrayContaining("0", "1", "2"));
+  }
+
+  @Test
+  public void testAsArrayOfIntsWithInts() throws Exception {
+    final DelegatingClaim claim = new DelegatingClaim(
+        decodedToken(newToken(b ->
+            b.withArrayClaim(CLAIM, new Integer[] { 0, 1, 2 })))
+            .getClaim(CLAIM));
+    assertThat(claim.asArray(Integer.class), arrayContaining(0, 1, 2));
+  }
+
+  @Test
+  public void testAsArrayOfIntsWithLongs() throws Exception {
+    final DelegatingClaim claim = new DelegatingClaim(
+        decodedToken(newToken(b ->
+            b.withArrayClaim(CLAIM, new Long[] { 0L, 1L, 2L })))
+            .getClaim(CLAIM));
+    assertThat(claim.asArray(Integer.class), arrayContaining(0, 1, 2));
+  }
+
+  @Test(expected = ClassCastException.class)
+  public void testAsArrayOfIntsWithStrings() throws Exception {
+    final DelegatingClaim claim = new DelegatingClaim(
+        decodedToken(newToken(b ->
+            b.withArrayClaim(CLAIM, new String[] { "a", "b", "c" })))
+            .getClaim(CLAIM));
+    claim.asArray(Integer.class);
   }
 
   @Test

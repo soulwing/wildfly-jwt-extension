@@ -128,7 +128,7 @@ public interface Claim {
    * @throws ClassCastException if the value is not of array type
    *    or if the values cannot be coerced to the given type
    */
-  <T> T[] asArray(Class<?> elementType);
+  <T> T[] asArray(Class<? extends T> elementType);
 
   /**
    * Retrieves the value of this claim as a generic list.

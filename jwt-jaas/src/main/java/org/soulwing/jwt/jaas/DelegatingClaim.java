@@ -18,6 +18,7 @@
  */
 package org.soulwing.jwt.jaas;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -36,7 +37,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -50,10 +50,12 @@ import org.soulwing.jwt.api.Claim;
  */
 public class DelegatingClaim implements Claim {
 
-  static final List<Class<?>> PARAMETER_TYPES =
+  private static final List<Class<?>> PARAMETER_TYPES =
       Arrays.asList(String.class, Double.class, Long.class, Integer.class,
           BigInteger.class, BigDecimal.class, Boolean.class, Object.class);
+
   private final Lock lock = new ReentrantLock();
+
   private final com.auth0.jwt.interfaces.Claim delegate;
 
   private volatile Type type;
@@ -143,8 +145,11 @@ public class DelegatingClaim implements Claim {
   }
 
   @Override
-  public <T> T[] asArray(Class<?> elementType) {
-    return null;
+  @SuppressWarnings("unchecked")
+  public <T> T[] asArray(Class<? extends T> elementType) {
+    final List<T> list = asList(elementType);
+    if (list == null) return null;
+    return list.toArray((T[]) Array.newInstance(elementType, list.size()));
   }
 
   @Override

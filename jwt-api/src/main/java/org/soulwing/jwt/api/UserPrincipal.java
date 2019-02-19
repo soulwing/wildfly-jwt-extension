@@ -58,4 +58,5 @@ public interface UserPrincipal extends Principal, Serializable {
    */
   Map<String, Claim> getClaims();
 
+
 }
