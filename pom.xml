@@ -84,5 +84,6 @@
   <modules>
     <module>jwt-api</module>
     <module>jwt-jaas</module>
+    <module>jwt-modules</module>
   </modules>
 </project>
