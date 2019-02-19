@@ -38,6 +38,7 @@ import org.jboss.security.auth.callback.ObjectCallback;
 import org.jboss.security.auth.spi.AbstractServerLoginModule;
 import org.soulwing.jwt.api.Claim;
 import org.soulwing.jwt.api.UserPrincipal;
+import org.soulwing.jwt.service.Credential;
 
 /**
  * A JAAS {@code LoginModule} that validates a credential of type 
@@ -57,7 +58,7 @@ public class JwtLoginModule extends AbstractServerLoginModule {
   public static final String ROLE_CLAIMS = "role-claims";
   
   private String[] roleClaims;
-  protected JwtCredential credential;
+  protected Credential credential;
   
   @Override
   public void initialize(Subject subject, CallbackHandler callbackHandler,
@@ -82,14 +83,14 @@ public class JwtLoginModule extends AbstractServerLoginModule {
     try {
       callbackHandler.handle(new Callback[] { callback });
       final Object obj = callback.getCredential();
-      if (!(obj instanceof JwtCredential)) {
+      if (!(obj instanceof Credential)) {
         if (LOGGER.isDebugEnabled()) {
           LOGGER.debug("credential object is not a decoded JWT");
         }
         return false;
       }
 
-      credential = (JwtCredential) obj;
+      credential = (Credential) obj;
       loginOk = true;
       return true;
     }

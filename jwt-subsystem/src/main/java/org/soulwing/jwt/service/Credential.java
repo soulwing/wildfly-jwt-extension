@@ -1,5 +1,5 @@
 /*
- * File created on Feb 15, 2019
+ * File created on Feb 19, 2019
  *
  * Copyright (c) 2019 Carl Harris, Jr
  * and others as noted
@@ -16,23 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.soulwing.jwt.jaas;
+package org.soulwing.jwt.service;
 
 import org.soulwing.jwt.api.UserPrincipal;
-import com.auth0.jwt.interfaces.DecodedJWT;
 
 /**
- * An object that holds a {@link DecodedJWT}.
+ * An object that represents a credential for a JWT authentication.
  *
  * @author Carl Harris
  */
-public interface JwtCredential {
-
-  /**
-   * Gets the decoded JWT object.
-   * @return decoded JWT (never {@code null})
-   */
-  DecodedJWT getToken();
+public interface Credential {
 
   /**
    * Gets the associated user principal.

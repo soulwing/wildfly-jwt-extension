@@ -2,16 +2,18 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.soulwing.jwt</groupId>
-    <artifactId>wildfly-jwt-module</artifactId>
+    <artifactId>wildfly-jwt-extension</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>jwt-jaas</artifactId>
-  <name>Wildfly JWT JAAS Module</name>
+  <artifactId>jwt-subsystem</artifactId>
+  <name>Wildfly JWT Subsystem</name>
   <properties>
-    <module.name>org.soulwing.jwt.jaas</module.name>
-    <module.path>org/soulwing/jwt/jass</module.path>
+    <subsystem.name>jwt</subsystem.name>
+    <module.name>org.soulwing.${subsystem.name}</module.name>
+    <module.path>org/soulwing/${subsystem.name}</module.path>
     <module.slot>main</module.slot>
     <module.directory>${project.build.directory}/modules/${module.path}/${module.slot}</module.directory>
+    <dependency.module.slot>${project.parent.artifactId}</dependency.module.slot>
   </properties>
   <build>
     <plugins>
