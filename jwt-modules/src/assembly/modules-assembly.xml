@@ -45,7 +45,7 @@
     </fileSet>
     <fileSet>
       <outputDirectory>modules</outputDirectory>
-      <directory>../jwt-jaas/target/modules</directory>
+      <directory>../jwt-subsystem/target/modules</directory>
       <fileMode>0644</fileMode>
       <directoryMode>0755</directoryMode>
       <includes>
