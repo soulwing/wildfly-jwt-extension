@@ -92,7 +92,7 @@ public class JwtAuthenticationMechanism implements AuthenticationMechanism {
       return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
     }
     catch (AuthenticationException ex) {
-      LOGGER.info("authentication failed: " + ex.getMessage(), ex);
+      LOGGER.info("authentication failed: " + ex.getMessage());
       securityContext.setAuthenticationRequired();
       return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
     }

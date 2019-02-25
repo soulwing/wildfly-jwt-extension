@@ -80,7 +80,7 @@ public class Auth0JwtAuthenticator implements Authenticator {
           decodedToken.getClaim(name).as(Object.class))) {
         LOGGER.warn("assertion on claim '" + name + "' failed; value was "
             + decodedToken.getClaim(name).as(Object.class));
-        throw new ClaimAssertionFailedException("assertion on claim'" + name +
+        throw new ClaimAssertionFailedException("assertion on claim '" + name +
             "' failed");
       }
     }
