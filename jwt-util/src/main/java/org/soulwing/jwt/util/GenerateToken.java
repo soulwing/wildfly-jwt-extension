@@ -48,8 +48,12 @@ public class GenerateToken {
 
     final String token = JWT.create()
         .withIssuer("fakeIssuer")
+        .withAudience("summit")
         .withSubject("ceharris")
-        .withClaim("grp", "valid-user")
+        .withArrayClaim("grp", new String[] { "valid-user",
+            "research.summit.app.pre-award",
+            "research.summit.app.app-admin",
+            "research.summit.app.pre-award-manager" })
         .sign(getAlgorithm());
 
     System.out.println(token);
@@ -92,8 +96,10 @@ public class GenerateToken {
 
   private static PrivateKey loadPrivateKey(PublicKeyType type)
       throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
+    final String text = getRequiredEnv("JWT_PRIVATE_KEY").replaceAll("\\\\n", "\n");
+    System.out.println(text);
     try (final PemReader reader =
-        new PemReader(new StringReader(getRequiredEnv("JWT_PRIVATE_KEY")))) {
+        new PemReader(new StringReader(text))) {
       final PemObject obj = reader.readPemObject();
       if (obj == null) throw new InvalidKeySpecException();
       final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(obj.getContent());
