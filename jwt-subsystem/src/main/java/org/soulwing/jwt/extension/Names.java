@@ -54,7 +54,7 @@ public interface Names {
 
   String CLAIM_ASSERTION = "claim-assertion";
   String PREDICATE = "predicate";
-  String MODE = "operator";
+  String MODE = "mode";
 
   String CLAIM_TRANSFORM = "claim-transform";
   String TRANSFORMER = "transformer";
