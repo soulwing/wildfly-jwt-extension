@@ -80,3 +80,20 @@ openssl pkcs8 -topk8 -nocrypt -in ec-private.pem -out ec-private-pk8.pem
 
 Alpine note on supported EC curves: secp256r1, secp384r1, secp521r1
 see https://github.com/docker-library/openjdk/issues/115
+
+#### Sample Configuration Using EC256 authentication
+
+```
+/extension=org.soulwing.jwt:add(module=org.soulwing.jwt)
+/subsystem=jwt:add
+reload
+
+/subsystem=security/security-domain=jwt:add
+/subsystem=security/security-domain=jwt/authentication=classic:add
+/subsystem=security/security-domain=jwt/authentication=classic/login-module=JwtClaim:add(module=org.soulwing.jwt, code=org.soulwing.jwt.jaas.JwtLoginModule, flag=required, module-options={ role-claims="grp" })
+/subsystem=security/security-domain=jwt/authentication=classic/login-module=RoleMapping:add(code=RoleMapping, flag=optional, module-options={ rolesProperties="file:/run/wildfly/configuration/role-mapping.properties" })
+reload
+
+/subsystem=jwt/profile=default:add(algorithm=ES256)
+/subsystem=jwt/profile=default/public-key=default:add(format=PEM, type=EC, path="ec-public.pem", relative-to="jboss.server.config.dir")
+```
