@@ -1,16 +1,16 @@
-wildfly-jwt-module
-==================
+wildfly-jwt-extension
+=====================
 
-A module for Wildfly that provides container-managed JWT-based
+An extension for Wildfly that provides container-managed JWT-based
 authentication for a Java web application.
 
-This module provides container-managed support for JWT, such that web 
+This extension provides container-managed support for JWT, such that web 
 applications can use the Java EE standard security mechanisms; for example, 
 declarative roles and constraints in `web.xml` and the `@RolesAllowed` bean
 annotation. 
 
 The main component is a standard JAAS `LoginModule` that participates in 
-Wildfly's security subsystem.  The login module validates a JWT bearer token
+Wildfly's security subsystem.  The login module validates a JWT bearer delegate
 and makes the claims specified in it available as roles in Wildfly's built
 in security stack. Additionally, it makes the claims from the JWT payload
 available to a deployed Java web application via a custom subtype of the
@@ -43,9 +43,40 @@ mvn clean install
 
 #### Install the Extension
 ```
-tar -C ${WILDFLY_HOME} -zxpvf target/wildfly-jwt-{VERSION}-modules.tar.gz
+tar -C ${WILDFLY_HOME} -zxpvf target/wildfly-jwt-${VERSION}-modules.tar.gz
 ```
 
 ### Configuration
 
 TODO
+
+#### Generating Suitable RSA Key Pairs using OpenSSL
+
+* For the `RS256` algorihm, a 2048-bit key RSA key pair is recommended
+* For the `RS384` algorihm, a 3072-bit key RSA key pair is recommended
+* For the `RS512` algorihm, a 4096-bit key RSA key pair is recommended
+
+The commands below produce a 2048-bit RSA key pair is produced for `RSA256`.
+
+```bash
+openssl genrsa -out rsa-private.pem 2048
+openssl rsa -in rsa-private.pem -pubout -out rsa-public.pem
+openssl pkcs8 -topk8 -nocrypt -in rsa-private.pem -out rsa-private-pk8.pem  
+```
+
+#### Generating Suitable EC Key Pairs using OpenSSL
+
+The EC curve specified by the `-name` parameter of the OpenSSL `ecparam`
+command must be supported by the platform.
+
+> On Alpine, note that only the `secp256r1`, `secp384r1`, and `secp521r1`
+> curves are supported.
+ 
+```bash
+openssl ecparam -name secp256r1 -genkey -noout -out ec-private.pem
+openssl ec -in ec-private.pem -pubout -out ec-public.pem
+openssl pkcs8 -topk8 -nocrypt -in ec-private.pem -out ec-private-pk8.pem  
+```
+
+Alpine note on supported EC curves: secp256r1, secp384r1, secp521r1
+see https://github.com/docker-library/openjdk/issues/115

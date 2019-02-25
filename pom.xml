@@ -16,10 +16,11 @@
   </description>
   <properties>
     <java.version>1.8</java.version>
-    <version.org.wildfly>12.0.0.Final</version.org.wildfly>
-    <version.org.wildfly.core>4.0.0.Final</version.org.wildfly.core>
+    <version.org.wildfly>15.0.0.Final</version.org.wildfly>
+    <version.org.wildfly.core>7.0.0.Final</version.org.wildfly.core>
     <version.io.undertow>2.0.0.Final</version.io.undertow>
     <version.com.auth0>3.7.0</version.com.auth0>
+    <version.org.bouncycastle>1.56</version.org.bouncycastle>
   </properties>
   <scm>
     <connection>scm:git:git@github.com:soulwing/${project.artifactId}.git</connection>
@@ -72,6 +73,11 @@
         <artifactId>java-jwt</artifactId>
         <version>${version.com.auth0}</version>
       </dependency>
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcprov-jdk15on</artifactId>
+        <version>${version.org.bouncycastle}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <repositories>
@@ -85,5 +91,8 @@
     <module>jwt-auth0</module>
     <module>jwt-subsystem</module>
     <module>jwt-modules</module>
+    <module>jwt-webapp-demo</module>
+    <module>jwt-util</module>
+    <module>jwt-crypto</module>
   </modules>
 </project>

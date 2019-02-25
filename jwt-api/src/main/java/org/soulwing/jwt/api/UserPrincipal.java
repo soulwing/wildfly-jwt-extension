@@ -18,7 +18,6 @@
  */
 package org.soulwing.jwt.api;
 
-import java.io.Serializable;
 import java.security.Principal;
 import java.util.Map;
 
@@ -30,7 +29,7 @@ import java.util.Map;
  *
  * @author Carl Harris
  */
-public interface UserPrincipal extends Principal, Serializable {
+public interface UserPrincipal extends Principal {
 
   /**
    * Gets the specified claim.

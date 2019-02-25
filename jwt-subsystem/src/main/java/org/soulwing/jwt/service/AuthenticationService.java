@@ -25,14 +25,6 @@ package org.soulwing.jwt.service;
  */
 public interface AuthenticationService {
 
-  /**
-   * Validates a JWT and returns the corresponding {@link Credential} object.
-   * @param token string representation of the token as it appears in the
-   *    {@code Authorization} header of an HTTP request.
-   * @return credential object representing a valid token
-   * @throws AuthenticationException if the token is not valid; e.g. expired,
-   *    corrupt, unrecognized issuer, etc.
-   */
-  Credential validate(String token) throws AuthenticationException;
+  Authenticator newAuthenticator();
 
 }

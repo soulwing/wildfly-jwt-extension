@@ -18,6 +18,8 @@
  */
 package org.soulwing.jwt.service;
 
+import java.io.Serializable;
+
 import org.soulwing.jwt.api.UserPrincipal;
 
 /**
@@ -25,7 +27,7 @@ import org.soulwing.jwt.api.UserPrincipal;
  *
  * @author Carl Harris
  */
-public interface Credential {
+public interface Credential extends io.undertow.security.idm.Credential, Serializable {
 
   /**
    * Gets the associated user principal.

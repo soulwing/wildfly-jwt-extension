@@ -16,6 +16,24 @@
     <dependency.module.slot>${project.parent.artifactId}</dependency.module.slot>
   </properties>
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/*.properties</include>
+          <include>**/*.xml</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+        <excludes>
+          <exclude>**/*.properties</exclude>
+          <exclude>**/*.xml</exclude>
+        </excludes>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
@@ -74,13 +92,38 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>jwt-crypto</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-server</artifactId>
       <optional>true</optional>
     </dependency>
     <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-controller</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-undertow</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.undertow</groupId>
+      <artifactId>undertow-core</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.undertow</groupId>
+      <artifactId>undertow-servlet</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>com.auth0</groupId>
       <artifactId>java-jwt</artifactId>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

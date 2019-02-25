@@ -1,5 +1,5 @@
 /*
- * File created on Feb 14, 2019
+ * File created on Feb 19, 2019
  *
  * Copyright (c) 2019 Carl Harris, Jr
  * and others as noted
@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.soulwing.jwt.jaas;
+package org.soulwing.jwt.service;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;

@@ -1,5 +1,5 @@
 /*
- * File created on Feb 19, 2019
+ * File created on Feb 23, 2019
  *
  * Copyright (c) 2019 Carl Harris, Jr
  * and others as noted
@@ -16,18 +16,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.soulwing.jwt.service;
+package org.soulwing.jwt.demo;
+
+import javax.enterprise.context.ApplicationScoped;
 
 /**
- * A JWT {@link AuthenticationService} implemented using Auth0.
- *
+ * A {@link GreetingService} implemented as an injectable
  * @author Carl Harris
  */
-public class Auth0JwtAuthenticationService implements AuthenticationService {
+@ApplicationScoped
+public class GreetingServiceBean implements GreetingService {
 
   @Override
-  public Credential validate(String token) throws AuthenticationException {
-    return null;
+  public GreetingModel generateGreeting(String name) {
+    if (name == null || name.trim().isEmpty()) {
+      name = "World";
+    }
+    GreetingModel model = new GreetingModel();
+    model.setGreeting(String.format("Hello, %s", name));
+    return model;
   }
 
 }
