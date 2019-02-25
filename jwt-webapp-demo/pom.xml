@@ -42,9 +42,7 @@
       <type>pom</type>
     </dependency>
 
-    <!-- Needed only when access to the CAS principal is needed; e.g.
-         when using proxy authentication and in some custom authorization
-         scenarios -->
+    <!-- Needed only when access to the JWT principal is needed -->
     <dependency>
       <groupId>org.soulwing.jwt</groupId>
       <artifactId>jwt-api</artifactId>
