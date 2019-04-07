@@ -81,7 +81,7 @@ openssl pkcs8 -topk8 -nocrypt -in ec-private.pem -out ec-private-pk8.pem
 Alpine note on supported EC curves: secp256r1, secp384r1, secp521r1
 see https://github.com/docker-library/openjdk/issues/115
 
-#### Sample Configuration Using EC256 authentication
+#### Sample Configuration Using RS256 Signatures And AES128 Encryption
 
 ```
 /extension=org.soulwing.jwt:add(module=org.soulwing.jwt)
