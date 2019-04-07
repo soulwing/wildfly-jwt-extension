@@ -24,6 +24,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Base64;
 import java.util.Properties;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -81,6 +82,9 @@ public class GenerateToken {
         .build()
         .generate(claims);
 
+    System.out.println(new String(
+        Base64.getUrlDecoder().decode(token.substring(0, token.indexOf('.'))),
+        StandardCharsets.UTF_8));
     System.out.println(token);
   }
 
