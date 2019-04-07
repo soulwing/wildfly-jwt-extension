@@ -1,0 +1,3 @@
+org.soulwing.jwt.extension.spi.local.transformer.DistinguishedToSimpleNameTransformer
+org.soulwing.jwt.extension.spi.local.transformer.FlattenCaseTransformer
+org.soulwing.jwt.extension.spi.local.transformer.ReplacePatternTransformer

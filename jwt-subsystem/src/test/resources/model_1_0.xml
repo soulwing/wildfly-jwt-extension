@@ -1,0 +1,60 @@
+<subsystem xmlns="urn:soulwing.org:jwt:1.0"
+  statistics-enabled="true">
+  <secret name="secret-name" provider="provider-name" module="module-name">
+    <properties>
+      <property name="property-name" value="property-value"/>
+    </properties>
+  </secret>
+  <secret-key name="secret-key-name"
+      id="secret-id"
+      type="type-name" length="128"
+      provider="provider-name" module="module-name">
+    <properties>
+      <property name="property-name" value="property-value"/>
+    </properties>
+  </secret-key>
+  <trust-store name="trust-store-name" path="path-name"
+      relative-to="relative-to-name" password-secret="password-secret-name"
+      provider="provider-name" module="module-name">
+    <properties>
+      <property name="property-name" value="property-value"/>
+    </properties>
+  </trust-store>
+  <key-pair-storage name="key-pair-storage-name" provider="provider-name"
+      module="module-name">
+    <properties>
+      <property name="property-name" value="property-value"/>
+    </properties>
+  </key-pair-storage>
+  <transformer name="transformer-name" provider="provider-name" module="module-name">
+    <properties>
+      <property name="property-name" value="property-value"/>
+    </properties>
+  </transformer>
+  <claim-transform name="claim-transform-name" claim="claim-name"
+      transformers="transformer-name"/>
+  <claim-assertion name="claim-assertion-name" provider="provider-name"
+      module="module-name">
+    <properties>
+      <property name="property-name" value="property-value"/>
+    </properties>
+  </claim-assertion>
+  <signature name="signature-name"
+      algorithm="HS256"
+      trust-store="trust-store-name"
+      secret-keys="secret-key-name"
+      certificate-subject-name="subject-name"
+      check-certificate-expiration="true"
+      check-certificate-revocation="true"
+      check-subject-certificate-only="true"/>
+  <encryption name="encryption-name"
+      key-management-algorithm="A256KW"
+      content-encryption-algorithm="A128CBC-HS256"
+      compression-algorithm="DEF"
+      key-pair-storage="key-pair-storage-name"
+      secret-keys="secret-key-name"/>
+  <validator name="validator-name" issuer-url="issuer-url-value"
+      issuer="issuer-name" audience="audience-name" expiration-tolerance="-1"
+      signature="signature-name" encryption="encryption-name"
+      transforms="transform-name" assertions="assertion-name"/>
+</subsystem>

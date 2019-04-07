@@ -90,7 +90,7 @@ reload
 
 /subsystem=security/security-domain=jwt:add
 /subsystem=security/security-domain=jwt/authentication=classic:add
-/subsystem=security/security-domain=jwt/authentication=classic/login-module=JwtClaim:add(module=org.soulwing.jwt, code=org.soulwing.jwt.jaas.JwtLoginModule, flag=required, module-options={ role-claims="grp" })
+/subsystem=security/security-domain=jwt/authentication=classic/login-module=JwtClaim:add(module=org.soulwing.jwt, code=org.soulwing.jwt.extension.jaas.JwtLoginModule, flag=required, module-options={ role-claims="grp" })
 /subsystem=security/security-domain=jwt/authentication=classic/login-module=RoleMapping:add(code=RoleMapping, flag=optional, module-options={ rolesProperties="file:/run/wildfly/configuration/role-mapping.properties" })
 reload
 

@@ -1,0 +1,2 @@
+org.soulwing.jwt.extension.spi.local.truststore.JcaTrustStoreProvider
+org.soulwing.jwt.extension.spi.local.truststore.PemTrustStoreProvider

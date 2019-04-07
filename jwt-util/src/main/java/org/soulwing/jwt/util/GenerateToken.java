@@ -18,24 +18,19 @@
  */
 package org.soulwing.jwt.util;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.interfaces.ECPrivateKey;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.URL;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Properties;
 
-import org.bouncycastle.util.encoders.Base64;
-import org.bouncycastle.util.io.pem.PemObject;
-import org.bouncycastle.util.io.pem.PemReader;
-import org.soulwing.jwt.crypto.PublicKeyType;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
+import org.soulwing.jwt.api.Claims;
+import org.soulwing.jwt.api.JWS;
+import org.soulwing.jwt.api.JWTProvider;
+import org.soulwing.jwt.api.JWTProviderLocator;
+import org.soulwing.s2ks.KeyPairStorage;
+import org.soulwing.s2ks.KeyPairStorageLocator;
 
 /**
  * A simple token generator.
@@ -45,93 +40,50 @@ import com.auth0.jwt.algorithms.Algorithm;
 public class GenerateToken {
 
   public static void main(String[] args) throws Exception {
+    final JWTProvider provider = JWTProviderLocator.getProvider();
+    final Instant now = Instant.now();
+    final Instant expires = now.plus(30, ChronoUnit.MINUTES);
+    final Claims claims = provider.claims()
+        .id("f91d9ed1-ef2b-4561-ae0f-24e3f89d22f2")
+        .issuer("token-issuer")
+        .issuedAt(now)
+        .expiresAt(expires)
+        .subject("meggan")
+        .audience("test-service")
+        .set("uid", 12172773L)
+        .set("afl", "VT-EMPLOYEE", "VT-STUDENT", "VT-ALUM")
+        .set("grp", "uugid=research.summit.app.pre-award,ou=Groups,dc=vt,dc=edu")
+        .set("cn", "Meggan Marshall")
+        .set("eml", "meggan@vt.edu")
+        .build();
 
-    final String token = JWT.create()
-        .withIssuer("fakeIssuer")
-        .withAudience("summit")
-        .withSubject("ceharris")
-        .withArrayClaim("grp", new String[] { "valid-user",
-            "research.summit.app.pre-award",
-            "research.summit.app.app-admin",
-            "research.summit.app.pre-award-manager" })
-        .sign(getAlgorithm());
+    final String token = provider.generator()
+        .signature(provider.signatureOperator()
+            .algorithm(JWS.Algorithm.RS256)
+            .keyProvider(getKeyProvider())
+            .build())
+        .build()
+        .generate(claims);
 
     System.out.println(token);
   }
 
-  private static Algorithm getAlgorithm()
-      throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-    final String name = getRequiredEnv("JWT_ALGORITHM");
-    switch (name) {
-      case "none":
-        return Algorithm.none();
-      case "HS256":
-        return Algorithm.HMAC256(loadSecretKey());
-      case "HS384":
-        return Algorithm.HMAC384(loadSecretKey());
-      case "HS512":
-        return Algorithm.HMAC512(loadSecretKey());
-      case "RS256":
-        return Algorithm.RSA256(null,
-            (RSAPrivateKey) loadPrivateKey(PublicKeyType.RSA));
-      case "RS384":
-        return Algorithm.RSA384(null,
-            (RSAPrivateKey) loadPrivateKey(PublicKeyType.RSA));
-      case "RS512":
-        return Algorithm.RSA512(null,
-            (RSAPrivateKey) loadPrivateKey(PublicKeyType.RSA));
-      case "ES256":
-        return Algorithm.ECDSA256(null,
-            (ECPrivateKey) loadPrivateKey(PublicKeyType.EC));
-      case "ES384":
-        return Algorithm.ECDSA384(null,
-            (ECPrivateKey) loadPrivateKey(PublicKeyType.EC));
-      case "ES512":
-        return Algorithm.ECDSA512(null,
-            (ECPrivateKey) loadPrivateKey(PublicKeyType.EC));
-      default:
-        throw new IllegalArgumentException("unrecognized algorithm");
-    }
+  private static KeyPairStorageKeyProvider getKeyProvider() throws Exception {
+    return new KeyPairStorageKeyProvider("test", getKeyPairStorage());
   }
 
-  private static PrivateKey loadPrivateKey(PublicKeyType type)
-      throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
-    final String text = getRequiredEnv("JWT_PRIVATE_KEY").replaceAll("\\\\n", "\n");
-    System.out.println(text);
-    try (final PemReader reader =
-        new PemReader(new StringReader(text))) {
-      final PemObject obj = reader.readPemObject();
-      if (obj == null) throw new InvalidKeySpecException();
-      final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(obj.getContent());
-      final KeyFactory kf = KeyFactory.getInstance(type.name());
-      return kf.generatePrivate(spec);
-    }
+  private static KeyPairStorage getKeyPairStorage() throws Exception {
+    Properties properties = new Properties();
+    properties.setProperty("storageDirectory", getResourcePath("keys"));
+    properties.setProperty("passwordFile", getResourcePath("keys/test/key-password"));
+    return KeyPairStorageLocator.getInstance("LOCAL",
+        properties);
   }
 
-  private static PublicKey loadPublicKey(PublicKeyType type)
-      throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
-    try (final PemReader reader =
-             new PemReader(new StringReader(getRequiredEnv("JWT_PUBLIC_KEY")))) {
-      final PemObject obj = reader.readPemObject();
-      if (obj == null) throw new InvalidKeySpecException();
-      final X509EncodedKeySpec spec = new X509EncodedKeySpec(obj.getContent());
-      final KeyFactory kf = KeyFactory.getInstance(type.name());
-      return kf.generatePublic(spec);
-    }
+  private static String getResourcePath(String name) throws Exception {
+    URL url = GenerateToken.class.getClassLoader().getResource(name);
+    if (url == null) throw new FileNotFoundException(name);
+    return new File(url.toURI()).getPath();
   }
-
-  private static byte[] loadSecretKey() {
-    return Base64.decode(getRequiredEnv("JWT_SECRET_KEY"));
-  }
-
-  private static String getRequiredEnv(String name) {
-    final String value = System.getenv(name);
-    if (value == null) {
-      throw new IllegalArgumentException(name + " environment variable is not set");
-    }
-    return value;
-  }
-
-
 
 }

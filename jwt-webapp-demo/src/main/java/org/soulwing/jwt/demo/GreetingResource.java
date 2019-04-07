@@ -18,7 +18,6 @@
  */
 package org.soulwing.jwt.demo;
 
-import java.security.Principal;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -27,9 +26,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
-import org.soulwing.jwt.api.UserPrincipal;
+import org.soulwing.jwt.extension.api.UserPrincipal;
 
 /**
  * A REST resource that produces personalized greetings.
@@ -40,19 +38,14 @@ import org.soulwing.jwt.api.UserPrincipal;
 public class GreetingResource {
 
   @Inject
-  protected GreetingService greetingService;
+  GreetingService greetingService;
 
   @GET
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response generateGreeting(@QueryParam("name") String name,
+  @Produces(MediaType.TEXT_PLAIN)
+  public String generateGreeting(@QueryParam("name") String name,
       @Context HttpServletRequest request) {
-    final Principal principal = request.getUserPrincipal();
-    System.out.println("User: " + principal.getName());
-    if (principal instanceof UserPrincipal) {
-      System.out.println("Groups: " + ((UserPrincipal) principal).getClaim("grp").asList());
-      System.out.println("APP_ADMIN: " + request.isUserInRole("APP_ADMIN"));
-    }
-    return Response.ok(greetingService.generateGreeting(name)).build();
+    return greetingService.generateGreeting((UserPrincipal)
+        request.getUserPrincipal());
   }
 
 }

@@ -18,6 +18,8 @@
  */
 package org.soulwing.jwt.demo;
 
+import org.soulwing.jwt.extension.api.UserPrincipal;
+
 /**
  * A greeting service.
  *
@@ -27,9 +29,9 @@ public interface GreetingService {
 
   /**
    * Generates a personalized greeting.
-   * @param name name to include in the greeting
+   * @param principal user principal
    * @return greeting model
    */
-  GreetingModel generateGreeting(String name);
+  String generateGreeting(UserPrincipal principal);
 
 }

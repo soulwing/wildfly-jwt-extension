@@ -64,8 +64,17 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.auth0</groupId>
-      <artifactId>java-jwt</artifactId>
+      <groupId>org.soulwing.jwt</groupId>
+      <artifactId>jwt-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.soulwing.s2ks</groupId>
+      <artifactId>s2ks-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.soulwing.s2ks</groupId>
+      <artifactId>s2ks-impl</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>

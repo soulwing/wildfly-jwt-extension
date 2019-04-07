@@ -88,12 +88,12 @@
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>jwt-api</artifactId>
+      <artifactId>jwt-extension-api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>jwt-crypto</artifactId>
+      <artifactId>jwt-extension-spi</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -121,9 +121,21 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>com.auth0</groupId>
-      <artifactId>java-jwt</artifactId>
-      <optional>true</optional>
+      <groupId>org.soulwing.jwt</groupId>
+      <artifactId>jwt-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.soulwing.s2ks</groupId>
+      <artifactId>s2ks-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -134,12 +146,33 @@
       <artifactId>jmock-junit4</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.jmock</groupId>
+      <artifactId>jmock-legacy</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-library</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-subsystem-test</artifactId>
+      <type>pom</type>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.slf4j</groupId>
+          <artifactId>slf4j-jboss-logmanager</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 </project>

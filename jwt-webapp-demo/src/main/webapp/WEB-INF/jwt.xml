@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jwt xmlns="urn:soulwing.org:jwt:1.0">
-  <profile>default</profile>
+  <validator>default</validator>
   <add-api-dependencies />
 </jwt>

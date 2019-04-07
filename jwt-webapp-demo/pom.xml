@@ -45,7 +45,7 @@
     <!-- Needed only when access to the JWT principal is needed -->
     <dependency>
       <groupId>org.soulwing.jwt</groupId>
-      <artifactId>jwt-api</artifactId>
+      <artifactId>jwt-extension-api</artifactId>
       <version>${project.version}</version>
     </dependency>
 

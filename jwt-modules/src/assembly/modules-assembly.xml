@@ -27,7 +27,7 @@
   <fileSets>
     <fileSet>
       <outputDirectory>modules</outputDirectory>
-      <directory>../jwt-api/target/modules</directory>
+      <directory>../jwt-extension-api/target/modules</directory>
       <fileMode>0644</fileMode>
       <directoryMode>0755</directoryMode>
       <includes>
@@ -36,7 +36,7 @@
     </fileSet>
     <fileSet>
       <outputDirectory>modules</outputDirectory>
-      <directory>../jwt-crypto/target/modules</directory>
+      <directory>../jwt-extension-spi/target/modules</directory>
       <fileMode>0644</fileMode>
       <directoryMode>0755</directoryMode>
       <includes>
@@ -45,7 +45,25 @@
     </fileSet>
     <fileSet>
       <outputDirectory>modules</outputDirectory>
-      <directory>../jwt-auth0/target/modules</directory>
+      <directory>../jwt-extension-spi-local/target/modules</directory>
+      <fileMode>0644</fileMode>
+      <directoryMode>0755</directoryMode>
+      <includes>
+        <include>**/*</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <outputDirectory>modules</outputDirectory>
+      <directory>../jwt-provider/target/modules</directory>
+      <fileMode>0644</fileMode>
+      <directoryMode>0755</directoryMode>
+      <includes>
+        <include>**/*</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <outputDirectory>modules</outputDirectory>
+      <directory>../jwt-key-storage/target/modules</directory>
       <fileMode>0644</fileMode>
       <directoryMode>0755</directoryMode>
       <includes>
