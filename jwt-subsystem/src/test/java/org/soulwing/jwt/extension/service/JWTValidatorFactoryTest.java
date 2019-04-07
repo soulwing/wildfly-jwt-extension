@@ -426,6 +426,8 @@ public class JWTValidatorFactoryTest {
         will(returnValue(jweBuilder));
         oneOf(jweBuilder).keyProvider(with(any(KeyProvider.class)));
 
+        allowing(jweBuilder).contentType(JWE.JWT);
+        will(returnValue(jweBuilder));
         oneOf(jweBuilder).build();
         will(returnValue(encryptionOperator));
       }

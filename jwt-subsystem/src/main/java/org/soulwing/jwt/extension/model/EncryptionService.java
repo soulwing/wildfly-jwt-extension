@@ -22,6 +22,7 @@ import static org.soulwing.jwt.extension.model.ExtensionLogger.LOGGER;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -158,7 +159,9 @@ class EncryptionService implements Service<EncryptionService> {
 
     @Override
     public KeyPairStorage getKeyPairStorage() {
-      return keyPairStorageService.get().getKeyPairStorage();
+      return Optional.ofNullable(keyPairStorageService)
+          .map(Supplier::get).map(KeyPairStorageService::getKeyPairStorage)
+          .orElse(null);
     }
 
     @Override

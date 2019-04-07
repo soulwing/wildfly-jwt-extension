@@ -21,14 +21,18 @@ package org.soulwing.jwt.util;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Properties;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.soulwing.jwt.api.Claims;
+import org.soulwing.jwt.api.JWE;
 import org.soulwing.jwt.api.JWS;
 import org.soulwing.jwt.api.JWTProvider;
 import org.soulwing.jwt.api.JWTProviderLocator;
+import org.soulwing.jwt.api.SingletonKeyProvider;
 import org.soulwing.s2ks.KeyPairStorage;
 import org.soulwing.s2ks.KeyPairStorageLocator;
 
@@ -39,7 +43,12 @@ import org.soulwing.s2ks.KeyPairStorageLocator;
  */
 public class GenerateToken {
 
+  static final String KEY_STRING = "fdajkdfas09asd9a";
+
   public static void main(String[] args) throws Exception {
+    final SecretKeySpec secretKey =
+        new SecretKeySpec(KEY_STRING.getBytes(StandardCharsets.UTF_8), "AES");
+
     final JWTProvider provider = JWTProviderLocator.getProvider();
     final Instant now = Instant.now();
     final Instant expires = now.plus(30, ChronoUnit.MINUTES);
@@ -58,6 +67,13 @@ public class GenerateToken {
         .build();
 
     final String token = provider.generator()
+        .encryption(provider.encryptionOperator()
+            .keyManagementAlgorithm(JWE.KeyManagementAlgorithm.A128KW)
+            .contentEncryptionAlgorithm(JWE.ContentEncryptionAlgorithm.A128CBC_HS256)
+            .compressionAlgorithm(JWE.CompressionAlgorithm.DEFLATE)
+            .keyProvider(SingletonKeyProvider.with("1", secretKey))
+            .contentType(JWE.JWT)
+            .build())
         .signature(provider.signatureOperator()
             .algorithm(JWS.Algorithm.RS256)
             .keyProvider(getKeyProvider())

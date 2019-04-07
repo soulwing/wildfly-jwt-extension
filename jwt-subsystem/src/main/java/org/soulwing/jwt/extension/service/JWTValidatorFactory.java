@@ -119,6 +119,8 @@ class JWTValidatorFactory {
             configuration.getSecretKeys()));
       }
 
+      builder.contentType(JWE.JWT);
+
       return builder.build();
     };
 
