@@ -90,10 +90,20 @@ reload
 
 /subsystem=security/security-domain=jwt:add
 /subsystem=security/security-domain=jwt/authentication=classic:add
-/subsystem=security/security-domain=jwt/authentication=classic/login-module=JwtClaim:add(module=org.soulwing.jwt, code=org.soulwing.jwt.extension.jaas.JwtLoginModule, flag=required, module-options={ role-claims="grp" })
+/subsystem=security/security-domain=jwt/authentication=classic/login-module=JwtClaim:add(module=org.soulwing.jwt, code=org.soulwing.jwt.extension.jaas.JwtLoginModule, flag=required, module-options={ role-claims="grp, afl" })
 /subsystem=security/security-domain=jwt/authentication=classic/login-module=RoleMapping:add(code=RoleMapping, flag=optional, module-options={ rolesProperties="file:/run/wildfly/configuration/role-mapping.properties" })
 reload
 
-/subsystem=jwt/profile=default:add(algorithm=ES256)
-/subsystem=jwt/profile=default/public-key=default:add(format=PEM, type=EC, path="ec-public.pem", relative-to="jboss.server.config.dir")
+/subsystem=jwt/secret=trust-store-password:add(provider=FILE, properties={path="/run/secrets/trust-store-password"})
+/subsystem=jwt/trust-store=default-jks:add(path="jwt-truststore.jks", relative-to="jboss.server.config.dir", provider="JCA", password-secret=trust-store-password, properties={type=JKS})
+
+/subsystem=jwt/secret-key=shared-key-1:add(id=1, type=AES, length=128, provider=FILE, properties={path="/run/secrets/encryption-password"})
+
+/subsystem=jwt/transformer=DistinguishedToSimpleName:add(properties={name-component=uugid})
+/subsystem=jwt/transformer=FlattenCase:add
+/subsystem=jwt/claim-transform=grp:add(transformers=[DistinguishedToSimpleName,FlattenCase])
+/subsystem=jwt/signature=public-key:add(algorithm=RS256, trust-store=default-jks)
+/subsystem=jwt/encryption=shared-key:add(key-management-algorithm=A128KW, content-encryption-algorithm=A128CBC-HS256, compression-algorithm=DEF, secret-keys=[shared-key-1])
+/subsystem=jwt/validator=default:add(issuer="token-issuer", issuer-url="https://token-issuer.localhost.vt.edu", expiration-tolerance=90, audience="test-service", signature=public-key, encryption=shared-key, transforms=[grp])
+
 ```
