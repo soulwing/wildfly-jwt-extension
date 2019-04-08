@@ -30,6 +30,10 @@ import org.soulwing.jwt.extension.service.AuthenticationService;
 import io.undertow.servlet.ServletExtension;
 import io.undertow.servlet.api.DeploymentInfo;
 
+/**
+ * A {@link ServletExtension} that replaces the deployment's authentication
+ * mechanism with the JWT authentication mechanism.
+ */
 public class JwtServletExtension
     implements Service<ServletExtension>, ServletExtension {
 
@@ -53,17 +57,18 @@ public class JwtServletExtension
 
   @Override
   public void stop(StopContext stopContext) {
-    LOGGER.info(stopContext.getController().getName() + " stopped ");
+    LOGGER.info(stopContext.getController().getName() + " stopped");
   }
 
   @Override
   public void handleDeployment(DeploymentInfo deploymentInfo, 
       ServletContext servletContext) {
-    
+
     deploymentInfo.clearLoginMethods();
     deploymentInfo.addFirstAuthenticationMechanism(
         JwtAuthenticationMechanism.MECHANISM_NAME,
-        new JwtAuthenticationMechanism(authenticationService));
+        new JwtAuthenticationMechanism(
+            deploymentInfo.getIdentityManager(), authenticationService));
   }
 
 }
