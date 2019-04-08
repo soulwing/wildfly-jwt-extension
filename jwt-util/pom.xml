@@ -59,11 +59,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>jwt-crypto</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.soulwing.jwt</groupId>
       <artifactId>jwt-api</artifactId>
     </dependency>
