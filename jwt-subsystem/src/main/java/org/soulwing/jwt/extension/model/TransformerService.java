@@ -23,7 +23,6 @@ import static org.soulwing.jwt.extension.model.ExtensionLogger.LOGGER;
 import java.util.Properties;
 import java.util.function.Function;
 
-import org.jboss.modules.ModuleLoadException;
 import org.jboss.msc.service.Service;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
@@ -31,6 +30,7 @@ import org.jboss.msc.service.StopContext;
 import org.soulwing.jwt.extension.spi.ModuleServiceLocator;
 import org.soulwing.jwt.extension.spi.NoSuchServiceProviderException;
 import org.soulwing.jwt.extension.spi.ServiceLocator;
+import org.soulwing.jwt.extension.spi.ServiceLocatorException;
 import org.soulwing.jwt.extension.spi.Transformer;
 
 /**
@@ -96,14 +96,14 @@ class TransformerService implements Service<TransformerService> {
       transformer = (Transformer<Object, Object>)
           serviceLocator.locate(Transformer.class, provider, module);
       transformer.initialize(getProperties());
-      LOGGER.info(startContext.getController().getName() + " started");
+      LOGGER.debug(startContext.getController().getName() + " started");
     }
     catch (NoSuchServiceProviderException ex) {
       LOGGER.error("transformer provider " + provider + " not found"
           + (module != null ? " in module " + module : ""));
       throw new StartException(ex);
     }
-    catch (ModuleLoadException ex) {
+    catch (ServiceLocatorException ex) {
       LOGGER.error("error loading module " + module + ": " +
           ex.getMessage());
       throw new StartException(ex);
@@ -112,7 +112,7 @@ class TransformerService implements Service<TransformerService> {
 
   @Override
   public void stop(StopContext stopContext) {
-    LOGGER.info(stopContext.getController().getName() + " stopped");
+    LOGGER.debug(stopContext.getController().getName() + " stopped");
   }
 
   @Override

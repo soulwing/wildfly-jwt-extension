@@ -71,12 +71,12 @@ class ClaimTransformService implements Service<ClaimTransformService> {
 
   @Override
   public void start(StartContext startContext) throws StartException {
-    LOGGER.info(startContext.getController().getName() + " started");
+    LOGGER.debug(startContext.getController().getName() + " started");
   }
 
   @Override
   public void stop(StopContext stopContext) {
-    LOGGER.info(stopContext.getController().getName() + " stop");
+    LOGGER.debug(stopContext.getController().getName() + " stop");
   }
 
   @Override

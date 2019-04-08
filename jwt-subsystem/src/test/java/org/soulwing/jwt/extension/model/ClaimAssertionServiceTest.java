@@ -28,7 +28,6 @@ import static org.hamcrest.Matchers.sameInstance;
 
 import java.util.Properties;
 
-import org.jboss.modules.ModuleLoadException;
 import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.StartContext;
@@ -44,6 +43,7 @@ import org.soulwing.jwt.extension.service.AssertionConfiguration;
 import org.soulwing.jwt.extension.spi.Assertion;
 import org.soulwing.jwt.extension.spi.NoSuchServiceProviderException;
 import org.soulwing.jwt.extension.spi.ServiceLocator;
+import org.soulwing.jwt.extension.spi.ServiceLocatorException;
 
 /**
  * Unit tests for {@link ClaimAssertionService}.
@@ -146,12 +146,12 @@ public class ClaimAssertionServiceTest {
   }
 
   @Test(expected = StartException.class)
-  public void testStartWhenModuleLoadException()
+  public void testStartWhenServiceLocatorException()
       throws Exception {
     context.checking(new Expectations() {
       {
         oneOf(serviceLocator).locate(Assertion.class, PROVIDER, MODULE);
-        will(throwException(new ModuleLoadException()));
+        will(throwException(new ServiceLocatorException()));
       }
     });
 

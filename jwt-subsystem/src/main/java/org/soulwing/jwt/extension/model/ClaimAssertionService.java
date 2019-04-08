@@ -24,7 +24,6 @@ import java.util.Properties;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.jboss.modules.ModuleLoadException;
 import org.jboss.msc.service.Service;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
@@ -36,6 +35,7 @@ import org.soulwing.jwt.extension.spi.Assertion;
 import org.soulwing.jwt.extension.spi.ModuleServiceLocator;
 import org.soulwing.jwt.extension.spi.NoSuchServiceProviderException;
 import org.soulwing.jwt.extension.spi.ServiceLocator;
+import org.soulwing.jwt.extension.spi.ServiceLocatorException;
 
 /**
  * A service that provides a predicate to assert about the claims given in
@@ -101,14 +101,14 @@ class ClaimAssertionService implements Service<ClaimAssertionService> {
           serviceLocator.locate(Assertion.class, provider, module);
       assertion.initialize(properties);
       configuration = new InnerConfiguration(assertion, properties);
-      LOGGER.info(startContext.getController().getName() + " started");
+      LOGGER.debug(startContext.getController().getName() + " started");
     }
     catch (NoSuchServiceProviderException ex) {
       LOGGER.error("assertion provider " + provider + " not found"
           + (module != null ? " in module " + module : ""));
       throw new StartException(ex);
     }
-    catch (ModuleLoadException ex) {
+    catch (ServiceLocatorException ex) {
       LOGGER.error("error loading module " + module + ": " +
           ex.getMessage());
       throw new StartException(ex);
@@ -117,7 +117,7 @@ class ClaimAssertionService implements Service<ClaimAssertionService> {
 
   @Override
   public void stop(StopContext stopContext) {
-    LOGGER.info(stopContext.getController().getName() + " stop");
+    LOGGER.debug(stopContext.getController().getName() + " stop");
   }
 
   @Override

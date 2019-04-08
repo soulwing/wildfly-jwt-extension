@@ -25,7 +25,6 @@ import static org.hamcrest.Matchers.sameInstance;
 
 import java.util.Properties;
 
-import org.jboss.modules.ModuleLoadException;
 import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.StartContext;
@@ -38,6 +37,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.soulwing.jwt.extension.spi.NoSuchServiceProviderException;
 import org.soulwing.jwt.extension.spi.ServiceLocator;
+import org.soulwing.jwt.extension.spi.ServiceLocatorException;
 import org.soulwing.jwt.extension.spi.Transformer;
 
 /**
@@ -130,12 +130,12 @@ public class TransformerServiceTest {
   }
 
   @Test(expected = StartException.class)
-  public void testStartWhenModuleLoadException() throws Exception {
+  public void testStartWhenServiceLocatorException() throws Exception {
 
     context.checking(new Expectations() {
       {
         oneOf(serviceLocator).locate(Transformer.class, PROVIDER, MODULE);
-        will(throwException(new ModuleLoadException()));
+        will(throwException(new ServiceLocatorException()));
       }
     });
 

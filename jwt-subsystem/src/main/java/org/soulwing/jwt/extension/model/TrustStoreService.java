@@ -28,7 +28,6 @@ import java.util.Properties;
 import java.util.function.Supplier;
 
 import org.jboss.as.controller.services.path.PathManager;
-import org.jboss.modules.ModuleLoadException;
 import org.jboss.msc.service.Service;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
@@ -38,6 +37,7 @@ import org.soulwing.jwt.extension.spi.NoSuchServiceProviderException;
 import org.soulwing.jwt.extension.spi.Secret;
 import org.soulwing.jwt.extension.spi.SecretException;
 import org.soulwing.jwt.extension.spi.ServiceLocator;
+import org.soulwing.jwt.extension.spi.ServiceLocatorException;
 import org.soulwing.jwt.extension.spi.TrustStoreProvider;
 
 /**
@@ -137,7 +137,7 @@ class TrustStoreService implements Service<TrustStoreService> {
       LOGGER.debug("loaded trust store at path " + resolvedPath
           + " using provider " + provider);
 
-      LOGGER.info(startContext.getController().getName() + " started");
+      LOGGER.debug(startContext.getController().getName() + " started");
     }
     catch (SecretException ex) {
       LOGGER.error("error retrieving password secret " + ex.getMessage());
@@ -156,7 +156,7 @@ class TrustStoreService implements Service<TrustStoreService> {
           + (module != null ? " in module " + module : ""));
       throw new StartException(ex);
     }
-    catch (ModuleLoadException ex) {
+    catch (ServiceLocatorException ex) {
       LOGGER.error("error loading module " + module + ": " +
           ex.getMessage());
       throw new StartException(ex);
@@ -166,7 +166,7 @@ class TrustStoreService implements Service<TrustStoreService> {
 
   @Override
   public void stop(StopContext stopContext) {
-    LOGGER.info(stopContext.getController().getName() + " stopped");
+    LOGGER.debug(stopContext.getController().getName() + " stopped");
   }
 
   @Override

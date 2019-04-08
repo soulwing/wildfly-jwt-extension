@@ -68,7 +68,7 @@ class JwtService implements Service<JwtService> {
 
   @Override
   public void stop(StopContext stopContext) {
-    LOGGER.info("JWT service stopped");
+    LOGGER.info("JWT service " + JwtExtension.CURRENT_MODEL_VERSION + " stopped");
   }
 
   @Override

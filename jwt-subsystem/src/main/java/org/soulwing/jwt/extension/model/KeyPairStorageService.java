@@ -22,16 +22,16 @@ import static org.soulwing.jwt.extension.model.ExtensionLogger.LOGGER;
 
 import java.util.Properties;
 
-import org.jboss.modules.ModuleLoadException;
 import org.jboss.msc.service.Service;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.soulwing.jwt.extension.spi.ModuleServiceLocator;
-import org.soulwing.jwt.extension.spi.NoSuchServiceProviderException;
 import org.soulwing.jwt.extension.spi.ServiceLocator;
 import org.soulwing.jwt.extension.spi.ServiceProvider;
 import org.soulwing.s2ks.KeyPairStorage;
+import org.soulwing.s2ks.KeyPairStorageLocator;
+import org.soulwing.s2ks.spi.KeyPairStorageProvider;
 
 /**
  * A service for obtaining a key pair storage instance.
@@ -92,19 +92,10 @@ class KeyPairStorageService implements Service<KeyPairStorageService> {
   @Override
   public void start(StartContext startContext) throws StartException {
     try {
-      storage = serviceLocator.locate(Provider.class, provider,
-          module).getInstance(properties);
-      LOGGER.info(startContext.getController().getName() + " started");
-    }
-    catch (NoSuchServiceProviderException ex) {
-      LOGGER.error("key storage provider " + provider + " not found"
-          + (module != null ? " in module " + module : ""));
-      throw new StartException(ex);
-    }
-    catch (ModuleLoadException ex) {
-      LOGGER.error("error loading module " + module + ": " +
-          ex.getMessage());
-      throw new StartException(ex);
+      storage = KeyPairStorageLocator.getInstance(provider, properties,
+          () -> serviceLocator.getLoader(KeyPairStorageProvider.class, module));
+
+      LOGGER.debug(startContext.getController().getName() + " started");
     }
     catch (Exception ex) {
       LOGGER.error("error obtaining key storage instance: " + ex.getMessage());
@@ -114,7 +105,7 @@ class KeyPairStorageService implements Service<KeyPairStorageService> {
 
   @Override
   public void stop(StopContext stopContext) {
-    LOGGER.info(stopContext.getController().getName() + " stop");
+    LOGGER.debug(stopContext.getController().getName() + " stop");
   }
 
   @Override

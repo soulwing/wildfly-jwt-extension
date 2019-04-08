@@ -29,7 +29,6 @@ import java.security.KeyStoreException;
 import java.util.Properties;
 
 import org.jboss.as.controller.services.path.PathManager;
-import org.jboss.modules.ModuleLoadException;
 import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.StartContext;
@@ -46,6 +45,7 @@ import org.soulwing.jwt.extension.spi.NoSuchServiceProviderException;
 import org.soulwing.jwt.extension.spi.Secret;
 import org.soulwing.jwt.extension.spi.SecretException;
 import org.soulwing.jwt.extension.spi.ServiceLocator;
+import org.soulwing.jwt.extension.spi.ServiceLocatorException;
 import org.soulwing.jwt.extension.spi.TrustStoreProvider;
 
 /**
@@ -157,13 +157,13 @@ public class TrustStoreServiceTest {
   }
 
   @Test(expected = StartException.class)
-  public void testStartWhenModuleNotFoundException() throws Exception {
+  public void testStartWhenServiceLocatorException() throws Exception {
     context.checking(new Expectations() {
       {
         oneOf(pathManager).resolveRelativePathEntry(PATH, RELATIVE_TO);
         will(returnValue(RESOLVED_PATH));
         oneOf(serviceLocator).locate(TrustStoreProvider.class, PROVIDER, MODULE);
-        will(throwException(new ModuleLoadException()));
+        will(throwException(new ServiceLocatorException()));
       }
     });
 

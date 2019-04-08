@@ -163,6 +163,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.soulwing.s2ks</groupId>
+      <artifactId>s2ks-impl</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-subsystem-test</artifactId>
       <type>pom</type>

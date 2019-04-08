@@ -25,7 +25,6 @@ import static org.hamcrest.Matchers.sameInstance;
 
 import java.util.Properties;
 
-import org.jboss.modules.ModuleLoadException;
 import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.StartContext;
@@ -41,6 +40,7 @@ import org.soulwing.jwt.extension.spi.Secret;
 import org.soulwing.jwt.extension.spi.SecretException;
 import org.soulwing.jwt.extension.spi.SecretProvider;
 import org.soulwing.jwt.extension.spi.ServiceLocator;
+import org.soulwing.jwt.extension.spi.ServiceLocatorException;
 
 /**
  * Unit tests for {@link SecretService}.
@@ -128,11 +128,11 @@ public class SecretServiceTest {
   }
 
   @Test(expected = StartException.class)
-  public void testGetSecretWhenModuleLoadException() throws Exception {
+  public void testGetSecretWhenServiceLocatorException() throws Exception {
     context.checking(new Expectations() {
       {
         oneOf(serviceLocator).locate(SecretProvider.class, PROVIDER, MODULE);
-        will(throwException(new ModuleLoadException()));
+        will(throwException(new ServiceLocatorException()));
       }
     });
 

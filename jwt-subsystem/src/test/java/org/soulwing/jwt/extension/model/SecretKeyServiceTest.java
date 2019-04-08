@@ -29,7 +29,6 @@ import java.util.Properties;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.jboss.modules.ModuleLoadException;
 import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.StartContext;
@@ -44,6 +43,7 @@ import org.soulwing.jwt.extension.spi.NoSuchServiceProviderException;
 import org.soulwing.jwt.extension.spi.SecretException;
 import org.soulwing.jwt.extension.spi.SecretKeyProvider;
 import org.soulwing.jwt.extension.spi.ServiceLocator;
+import org.soulwing.jwt.extension.spi.ServiceLocatorException;
 
 /**
  * Unit tests for {@link SecretService}.
@@ -169,11 +169,11 @@ public class SecretKeyServiceTest {
   }
 
   @Test(expected = StartException.class)
-  public void testStartWhenModuleLoadException() throws Exception {
+  public void testStartWhenServiceLocatordException() throws Exception {
     context.checking(new Expectations() {
       {
         oneOf(serviceLocator).locate(SecretKeyProvider.class, PROVIDER, MODULE);
-        will(throwException(new ModuleLoadException()));
+        will(throwException(new ServiceLocatorException()));
       }
     });
 

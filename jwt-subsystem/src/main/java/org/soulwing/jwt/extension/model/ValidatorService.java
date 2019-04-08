@@ -119,12 +119,12 @@ class ValidatorService
   public void start(StartContext startContext) {
     final JWTProvider provider = JWTProviderLocator.getProvider();
     configuration = new InnerConfiguration(provider);
-    LOGGER.info(startContext.getController().getName() + " started");
+    LOGGER.debug(startContext.getController().getName() + " started");
   }
 
   @Override
   public void stop(StopContext stopContext) {
-    LOGGER.info(stopContext.getController().getName() + " stopped");
+    LOGGER.debug(stopContext.getController().getName() + " stopped");
   }
 
   @Override

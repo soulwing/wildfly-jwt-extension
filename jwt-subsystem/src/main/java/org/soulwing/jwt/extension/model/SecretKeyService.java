@@ -23,7 +23,6 @@ import static org.soulwing.jwt.extension.model.ExtensionLogger.LOGGER;
 import java.util.Properties;
 import javax.crypto.SecretKey;
 
-import org.jboss.modules.ModuleLoadException;
 import org.jboss.msc.service.Service;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
@@ -34,6 +33,7 @@ import org.soulwing.jwt.extension.spi.NoSuchServiceProviderException;
 import org.soulwing.jwt.extension.spi.SecretException;
 import org.soulwing.jwt.extension.spi.SecretKeyProvider;
 import org.soulwing.jwt.extension.spi.ServiceLocator;
+import org.soulwing.jwt.extension.spi.ServiceLocatorException;
 
 /**
  * A service that provides a configuration for a secret key.
@@ -122,14 +122,14 @@ class SecretKeyService implements Service<SecretKeyService> {
     try {
       secretKeyProvider = serviceLocator.locate(SecretKeyProvider.class,
           provider, module);
-      LOGGER.info(startContext.getController().getName() + " started");
+      LOGGER.debug(startContext.getController().getName() + " started");
     }
     catch (NoSuchServiceProviderException ex) {
       LOGGER.error("secret key provider " + provider + " not found"
           + (module != null ? " in module " + module : ""));
       throw new StartException(ex);
     }
-    catch (ModuleLoadException ex) {
+    catch (ServiceLocatorException ex) {
       LOGGER.error("error loading module " + getModule() + ": " +
           ex.getMessage());
       throw new StartException(ex);
@@ -138,7 +138,7 @@ class SecretKeyService implements Service<SecretKeyService> {
 
   @Override
   public void stop(StopContext stopContext) {
-    LOGGER.info(stopContext.getController().getName() + " stop");
+    LOGGER.debug(stopContext.getController().getName() + " stop");
   }
 
   @Override
