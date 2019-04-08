@@ -75,11 +75,13 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>jwt-key-storage</artifactId>
       <version>${project.version}</version>
+      <type>pom</type>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jwt-provider</artifactId>
       <version>${project.version}</version>
+      <type>pom</type>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
