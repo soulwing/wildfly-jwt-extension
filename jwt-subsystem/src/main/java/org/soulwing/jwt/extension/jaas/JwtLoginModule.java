@@ -113,8 +113,7 @@ public class JwtLoginModule extends AbstractServerLoginModule {
   protected Principal getIdentity() {
     UserPrincipal principal = credential.getPrincipal();
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("identity assertion for principal `"
-          + principal.getName() + "`");
+      LOGGER.debug("principal name is `" + principal.getName() + "`");
     }
     return principal;
   }
