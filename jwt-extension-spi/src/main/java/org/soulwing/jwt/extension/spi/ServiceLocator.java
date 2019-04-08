@@ -18,7 +18,7 @@
  */
 package org.soulwing.jwt.extension.spi;
 
-import org.jboss.modules.ModuleLoadException;
+import java.util.ServiceLoader;
 
 /**
  * A locator for service providers.
@@ -27,7 +27,31 @@ import org.jboss.modules.ModuleLoadException;
  */
 public interface ServiceLocator {
 
+  /**
+   * Locates a service provider.
+   * @param type service provider type
+   * @param provider provider name
+   * @param module optional module name
+   * @param <T> service provider type
+   * @return service provider instance
+   * @throws NoSuchServiceProviderException if there exists no service provider
+   *    with the given name
+   * @throws ServiceLocatorException if an error occurs in obtaining ta service
+   *    provider instance
+   */
   <T extends ServiceProvider> T locate(Class<T> type, String provider,
-      String module) throws NoSuchServiceProviderException, ModuleLoadException;
+      String module) throws NoSuchServiceProviderException, ServiceLocatorException;
+
+  /**
+   * Gets a service loader for the specified provider type
+   * @param type provider type
+   * @param module optional module name
+   * @param <T> service provider type
+   * @return service loader instance
+   * @throws ServiceLocatorException if an error occurs in obtaining a service
+   *    loader
+   */
+  <T> ServiceLoader<T> getLoader(Class<T> type, String module)
+      throws ServiceLocatorException;
 
 }

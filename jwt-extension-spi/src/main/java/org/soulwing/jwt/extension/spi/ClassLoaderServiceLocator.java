@@ -21,8 +21,6 @@ package org.soulwing.jwt.extension.spi;
 import java.util.ServiceLoader;
 import java.util.stream.StreamSupport;
 
-import org.jboss.modules.ModuleLoadException;
-
 /**
  * A {@link ServiceLocator} implemented using JBoss Modules.
  *
@@ -38,7 +36,7 @@ public class ClassLoaderServiceLocator implements ServiceLocator {
   @Override
   public <T extends ServiceProvider> T locate(
       Class<T> type, String provider, String module)
-      throws NoSuchServiceProviderException, ModuleLoadException {
+      throws ServiceLocatorException {
 
     final ServiceLoader<T> serviceLoader = ServiceLoader.load(type);
     return StreamSupport.stream(
@@ -48,4 +46,8 @@ public class ClassLoaderServiceLocator implements ServiceLocator {
         .orElseThrow(() -> new NoSuchServiceProviderException(type, provider));
   }
 
+  @Override
+  public <T> ServiceLoader<T> getLoader(Class<T> type, String module) {
+    return ServiceLoader.load(type);
+  }
 }

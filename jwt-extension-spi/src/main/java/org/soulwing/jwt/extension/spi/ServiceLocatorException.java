@@ -1,5 +1,5 @@
 /*
- * File created on Apr 7, 2019
+ * File created on Apr 8, 2019
  *
  * Copyright (c) 2019 Carl Harris, Jr
  * and others as noted
@@ -19,18 +19,21 @@
 package org.soulwing.jwt.extension.spi;
 
 /**
- * An exception thrown to indicate that a service provider could not be l
- * located.
+ * An exception thrown by a {@link ServiceLocator}.
  *
  * @author Carl Harris
  */
-public class NoSuchServiceProviderException extends ServiceLocatorException {
+public class ServiceLocatorException extends RuntimeException {
 
-  public NoSuchServiceProviderException() {}
+  public ServiceLocatorException() {
+  }
 
-  public NoSuchServiceProviderException(Class<? extends ServiceProvider> type,
-      String provider) {
-    super("found no " + type.getSimpleName() + " with name `" + provider + "`");
+  public ServiceLocatorException(String message) {
+    this(message, null);
+  }
+
+  public ServiceLocatorException(String message, Throwable cause) {
+    super(message, cause);
   }
 
 }

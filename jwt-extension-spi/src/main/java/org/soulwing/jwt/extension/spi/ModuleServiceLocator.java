@@ -38,7 +38,7 @@ public class ModuleServiceLocator implements ServiceLocator {
   @Override
   public <T extends ServiceProvider> T locate(
       Class<T> type, String provider, String module)
-      throws NoSuchServiceProviderException, ModuleLoadException {
+      throws ServiceLocatorException {
 
     final ServiceLoader<T> serviceLoader = getLoader(type, module);
     return StreamSupport.stream(
@@ -48,18 +48,23 @@ public class ModuleServiceLocator implements ServiceLocator {
         .orElseThrow(() -> new NoSuchServiceProviderException(type, provider));
   }
 
-  private <T extends ServiceProvider> ServiceLoader<T> getLoader(
-      Class<T> type, String module) throws ModuleLoadException {
+  public <T> ServiceLoader<T> getLoader(Class<T> type, String module)
+      throws ServiceLocatorException {
 
-    final Module serviceModule = Module.getCallerModule();
-    if (serviceModule == null) {
-      return ServiceLoader.load(type);
+    try {
+      final Module serviceModule = Module.getCallerModule();
+      if (serviceModule == null) {
+        return ServiceLoader.load(type);
+      }
+
+      final Module providerModule = module != null ?
+          serviceModule.getModule(module) : serviceModule;
+
+      return providerModule.loadService(type);
     }
-
-    final Module providerModule = module != null ?
-        serviceModule.getModule(module) : serviceModule;
-
-    return providerModule.loadService(type);
+    catch (ModuleLoadException ex) {
+      throw new ServiceLocatorException(ex.getMessage(), ex);
+    }
   }
 
 }
