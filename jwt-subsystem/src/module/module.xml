@@ -28,6 +28,7 @@
     <module name="org.soulwing.jwt.spi"/>
     <module name="org.soulwing.jwt.provider" services="import"/>
     <module name="org.soulwing.s2ks" services="import"/>
+    <module name="org.glassfish.javax.json"/>
     <module name="org.bouncycastle" />
     <module name="org.picketbox" />
     <module name="org.jboss.staxmapper" />
@@ -42,6 +43,7 @@
     <module name="org.wildfly.extension.undertow" />
     <module name="io.undertow.servlet" />
     <module name="io.undertow.core" />
+    <module name="javax.json.api"/>
     <module name="javax.api" />
   </dependencies>
 

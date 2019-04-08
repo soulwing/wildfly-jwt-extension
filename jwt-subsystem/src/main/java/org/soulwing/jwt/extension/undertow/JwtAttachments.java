@@ -23,7 +23,7 @@ import org.soulwing.jwt.extension.service.Credential;
 import io.undertow.util.AttachmentKey;
 
 /**
- * Attachment keys used by CAS.
+ * Attachment keys used by JWT.
  *
  * @author Carl Harris
  */
@@ -34,6 +34,9 @@ interface JwtAttachments {
 
   AttachmentKey<Integer> AUTH_FAILED_KEY =
       AttachmentKey.create(Integer.class);
+
+  AttachmentKey<String> AUTH_MESSAGE_KEY =
+      AttachmentKey.create(String.class);
   
   AttachmentKey<Authenticator> AUTHENTICATOR_KEY =
       AttachmentKey.create(Authenticator.class);

@@ -18,12 +18,16 @@
  */
 package org.soulwing.jwt.extension.service;
 
+import java.net.URI;
+
 /**
  * A service that performs JWT authentication.
  *
  * @author Carl Harris
  */
 public interface AuthenticationService {
+
+  URI getIssuerUrl();
 
   Authenticator newAuthenticator() throws Exception;
 

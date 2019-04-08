@@ -20,7 +20,6 @@ package org.soulwing.jwt.extension.undertow;
 
 import static org.soulwing.jwt.extension.undertow.UndertowLogger.LOGGER;
 
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.soulwing.jwt.extension.service.AuthenticationException;
@@ -30,7 +29,9 @@ import org.soulwing.jwt.extension.service.Credential;
 import io.undertow.security.api.AuthenticationMechanism;
 import io.undertow.security.api.SecurityContext;
 import io.undertow.security.idm.Account;
+import io.undertow.security.idm.IdentityManager;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.util.StatusCodes;
 
 /**
  * An {@link AuthenticationMechanism} that uses the CAS protocol.
@@ -49,11 +50,23 @@ public class JwtAuthenticationMechanism implements AuthenticationMechanism {
   private static final String NOT_AUTHORIZED_MESSAGE =
       "identity manager does not recognize user '%s'";
 
+  private final IdentityManager identityManager;
   private final Supplier<AuthenticationService> authenticationService;
-  
-  JwtAuthenticationMechanism(
+  private final Supplier<AuthenticationChallenge.Builder> challengeBuilder;
+
+  JwtAuthenticationMechanism(IdentityManager identityManager,
       Supplier<AuthenticationService> authenticationService) {
+    this(identityManager, authenticationService,
+        JsonAuthenticationChallenge::builder);
+  }
+
+  private JwtAuthenticationMechanism(
+      IdentityManager identityManager,
+      Supplier<AuthenticationService> authenticationService,
+      Supplier<AuthenticationChallenge.Builder> challengeBuilder) {
+    this.identityManager = identityManager;
     this.authenticationService = authenticationService;
+    this.challengeBuilder = challengeBuilder;
   }
 
   @Override
@@ -64,9 +77,10 @@ public class JwtAuthenticationMechanism implements AuthenticationMechanism {
       return AuthenticationMechanismOutcome.NOT_ATTEMPTED;
     }
 
-    final Optional<String> token = getToken(exchange);
-    if (!token.isPresent()) {
-      exchange.putAttachment(JwtAttachments.AUTH_FAILED_KEY, 401);
+    final String token = getToken(exchange);
+    if (token == null) {
+      exchange.putAttachment(JwtAttachments.AUTH_MESSAGE_KEY,
+          "Bearer token authentication is required");
       securityContext.authenticationFailed("No token present", MECHANISM_NAME);
       return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
     }
@@ -76,8 +90,8 @@ public class JwtAuthenticationMechanism implements AuthenticationMechanism {
           authenticationService.get().newAuthenticator();
 
       exchange.putAttachment(JwtAttachments.AUTHENTICATOR_KEY, authenticator);
-      final Credential credential = authenticator.validate(token.get());
-      final Account account = authorize(credential, securityContext);
+      final Credential credential = authenticator.validate(token);
+      final Account account = authorize(credential);
 
       exchange.putAttachment(JwtAttachments.CREDENTIAL_KEY, credential);
 
@@ -85,11 +99,14 @@ public class JwtAuthenticationMechanism implements AuthenticationMechanism {
       return AuthenticationMechanismOutcome.AUTHENTICATED;
     }
     catch (AuthorizationException ex) {
-      exchange.putAttachment(JwtAttachments.AUTH_FAILED_KEY, 403);
+      exchange.putAttachment(JwtAttachments.AUTH_FAILED_KEY,
+          StatusCodes.FORBIDDEN);
       securityContext.authenticationFailed(ex.getMessage(), MECHANISM_NAME);
       return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
     }
     catch (AuthenticationException ex) {
+      exchange.putAttachment(JwtAttachments.AUTH_MESSAGE_KEY,
+          ex.getMessage());
       securityContext.setAuthenticationRequired();
       return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
     }
@@ -99,11 +116,11 @@ public class JwtAuthenticationMechanism implements AuthenticationMechanism {
     }
   }
 
-  private Optional<String> getToken(HttpServerExchange exchange) {
+  private String getToken(HttpServerExchange exchange) {
     final String header = exchange.getRequestHeaders().getFirst(AUTH_HEADER);
-    if (header == null) return Optional.empty();
-    if (!header.startsWith(BEARER_AUTH_SCHEMA + " ")) return Optional.empty();
-    return Optional.of(header.substring(BEARER_AUTH_SCHEMA.length()).trim());
+    if (header == null) return null;
+    if (!header.startsWith(BEARER_AUTH_SCHEMA + " ")) return null;
+    return header.substring(BEARER_AUTH_SCHEMA.length()).trim();
   }
 
   @Override
@@ -116,35 +133,47 @@ public class JwtAuthenticationMechanism implements AuthenticationMechanism {
       exchange.removeAttachment(JwtAttachments.AUTH_FAILED_KEY);
       return new ChallengeResult(false, failedStatus);
     }
-        
-    return new ChallengeResult(true, 401);
+
+    final int status = StatusCodes.UNAUTHORIZED;
+
+    challengeBuilder.get()
+        .statusCode(status)
+        .issuerUrl(authenticationService.get().getIssuerUrl())
+        .message(exchange.getAttachment(JwtAttachments.AUTH_MESSAGE_KEY))
+        .build()
+        .send(exchange);
+
+    exchange.removeAttachment(JwtAttachments.AUTH_MESSAGE_KEY);
+
+    return new ChallengeResult(true, status);
   }
 
   /**
    * Authorizes the user associated with the given assertion credential via
    * the container's identity manager.
    * @param credential the subject user credential
-   * @param securityContext security context
    * @return authorized user's account object
    * @throws AuthorizationException if the user is not authorized
    */
-  private Account authorize(Credential credential,
-      SecurityContext securityContext) throws AuthorizationException {
+  private Account authorize(Credential credential) throws AuthorizationException {
 
     String name = credential.getPrincipal().getName();
 
-    Account account = securityContext.getIdentityManager().verify(
-        name, credential);
+    Account account = identityManager.verify(name, credential);
     
     if (account == null) {
       String message = String.format(NOT_AUTHORIZED_MESSAGE, name);
-      LOGGER.info(message);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(message);
+      }
       throw new AuthorizationException(message);
     }
 
-    LOGGER.info("authorization successful: "
-        + " user=" + account.getPrincipal().getName()
-        + " roles=" + account.getRoles());
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("authorization successful:"
+          + " user=" + account.getPrincipal().getName()
+          + " roles=" + account.getRoles());
+    }
 
     return account;
   }

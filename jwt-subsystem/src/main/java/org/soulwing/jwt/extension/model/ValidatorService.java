@@ -137,7 +137,7 @@ class ValidatorService
     return issuer;
   }
 
-  URI getIssuerUrl() {
+  public URI getIssuerUrl() {
     return issuerUrl;
   }
 
