@@ -58,13 +58,27 @@
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>jwt-api</artifactId>
+      <artifactId>jwt-extension-api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>jwt-auth0</artifactId>
-      <type>pom</type>
+      <artifactId>jwt-extension-spi</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>jwt-extension-spi-local</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>jwt-key-storage</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>jwt-provider</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -72,6 +86,5 @@
       <artifactId>jwt-subsystem</artifactId>
       <version>${project.version}</version>
     </dependency>
-
   </dependencies>
 </project>
