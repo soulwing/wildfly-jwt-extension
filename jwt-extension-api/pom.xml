@@ -8,6 +8,8 @@
   <artifactId>jwt-extension-api</artifactId>
   <name>Wildfly JWT Module API</name>
   <properties>
+    <!-- if module name is changed, also change API_MODULE_NAME in
+          DependenciesDeploymentProcessor -->
     <module.name>org.soulwing.jwt.api</module.name>
     <module.path>org/soulwing/jwt/api</module.path>
     <module.slot>main</module.slot>

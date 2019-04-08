@@ -26,19 +26,23 @@ import org.jboss.as.server.DeploymentProcessorTarget;
 import org.jboss.as.server.deployment.Attachments;
 import org.jboss.as.server.deployment.DeploymentPhaseContext;
 import org.jboss.as.server.deployment.DeploymentUnit;
-import org.jboss.as.server.deployment.DeploymentUnitProcessingException;
 import org.jboss.as.server.deployment.DeploymentUnitProcessor;
 import org.jboss.as.server.deployment.Phase;
 import org.jboss.as.server.deployment.module.ModuleDependency;
 import org.jboss.as.server.deployment.module.ModuleSpecification;
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleLoader;
 
 /**
  * A {@link DeploymentUnitProcessor} that adds JWT dependencies to the
  * deployment.
  */
 public class DependenciesDeploymentProcessor implements DeploymentUnitProcessor {
+
+  private static final String API_MODULE_NAME = "org.soulwing.jwt.api";
+  private static final boolean NOT_OPTIONAL = false;
+  private static final boolean EXPORT = true;
+  private static final boolean DONT_IMPORT_SERVICES = false;
+  private static final boolean NOT_USER_SPECIFIED = false;
 
   private static final Phase PHASE = Phase.DEPENDENCIES;
 
@@ -47,8 +51,7 @@ public class DependenciesDeploymentProcessor implements DeploymentUnitProcessor 
   private static final DependenciesDeploymentProcessor INSTANCE =
       new DependenciesDeploymentProcessor();
 
-  private DependenciesDeploymentProcessor() {
-  }
+  private DependenciesDeploymentProcessor() { }
 
   /**
    * Adds a step handler for a deployment chain step that adds an instance
@@ -65,24 +68,26 @@ public class DependenciesDeploymentProcessor implements DeploymentUnitProcessor 
   }
 
   @Override
-  public void deploy(DeploymentPhaseContext phaseContext)
-      throws DeploymentUnitProcessingException {
+  public void deploy(DeploymentPhaseContext phaseContext) {
     
-    DeploymentUnit deploymentUnit = phaseContext.getDeploymentUnit();
-    AppConfiguration config = deploymentUnit.getAttachment(
+    final DeploymentUnit deploymentUnit = phaseContext.getDeploymentUnit();
+    final AppConfiguration config = deploymentUnit.getAttachment(
         DeploymentAttachments.JWT_DESCRIPTOR);
     if (config == null || !config.isAddDependencies()) return;
-    
-    String moduleId = Module.getCallerModule().getName();
-    ModuleLoader loader = Module.getBootModuleLoader();
-    ModuleDependency dependency = new ModuleDependency(loader, moduleId, false,
-        true, false, false);
 
-    ModuleSpecification moduleSpec = phaseContext.getDeploymentUnit()
+    final ModuleDependency dependency = new ModuleDependency(
+        Module.getBootModuleLoader(),
+        API_MODULE_NAME,
+        NOT_OPTIONAL,
+        EXPORT,
+        DONT_IMPORT_SERVICES,
+        NOT_USER_SPECIFIED);
+
+    final ModuleSpecification moduleSpec = phaseContext.getDeploymentUnit()
         .getAttachment(Attachments.MODULE_SPECIFICATION);
     moduleSpec.addSystemDependency(dependency);
 
-    LOGGER.info("added JWT module dependency to deployment "
+    LOGGER.info("added JWT API module dependency to deployment "
         + deploymentUnit.getName());
   }
   
