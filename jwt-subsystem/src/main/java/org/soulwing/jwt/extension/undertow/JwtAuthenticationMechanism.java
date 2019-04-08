@@ -42,7 +42,7 @@ public class JwtAuthenticationMechanism implements AuthenticationMechanism {
 
   static final String MECHANISM_NAME = "JWT";
 
-  private static String AUTH_HEADER = "Authorization";
+  private static final String AUTH_HEADER = "Authorization";
 
   private static final String BEARER_AUTH_SCHEMA = "Bearer";
 
@@ -60,15 +60,12 @@ public class JwtAuthenticationMechanism implements AuthenticationMechanism {
   public AuthenticationMechanismOutcome authenticate(
       HttpServerExchange exchange, SecurityContext securityContext) {
 
-    LOGGER.info("in authenticate()");
     if (!securityContext.isAuthenticationRequired()) {
-      LOGGER.info("not attempted");
       return AuthenticationMechanismOutcome.NOT_ATTEMPTED;
     }
 
     final Optional<String> token = getToken(exchange);
     if (!token.isPresent()) {
-      LOGGER.info("no token present");
       exchange.putAttachment(JwtAttachments.AUTH_FAILED_KEY, 401);
       securityContext.authenticationFailed("No token present", MECHANISM_NAME);
       return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
@@ -79,24 +76,20 @@ public class JwtAuthenticationMechanism implements AuthenticationMechanism {
           authenticationService.get().newAuthenticator();
 
       exchange.putAttachment(JwtAttachments.AUTHENTICATOR_KEY, authenticator);
-      LOGGER.info("validating token");
       final Credential credential = authenticator.validate(token.get());
       final Account account = authorize(credential, securityContext);
 
       exchange.putAttachment(JwtAttachments.CREDENTIAL_KEY, credential);
 
       securityContext.authenticationComplete(account, MECHANISM_NAME, true);
-      LOGGER.info("authentication complete");
       return AuthenticationMechanismOutcome.AUTHENTICATED;
     }
     catch (AuthorizationException ex) {
-      LOGGER.info("authorization failed: " + ex.getMessage());
       exchange.putAttachment(JwtAttachments.AUTH_FAILED_KEY, 403);
       securityContext.authenticationFailed(ex.getMessage(), MECHANISM_NAME);
       return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
     }
     catch (AuthenticationException ex) {
-      LOGGER.info("authentication failed: " + ex.getMessage());
       securityContext.setAuthenticationRequired();
       return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
     }
@@ -116,8 +109,6 @@ public class JwtAuthenticationMechanism implements AuthenticationMechanism {
   @Override
   public ChallengeResult sendChallenge(HttpServerExchange exchange,
       SecurityContext context) {
-
-    LOGGER.info("in sendChallenge()");
 
     final Integer failedStatus =
         exchange.getAttachment(JwtAttachments.AUTH_FAILED_KEY);
@@ -140,9 +131,8 @@ public class JwtAuthenticationMechanism implements AuthenticationMechanism {
   private Account authorize(Credential credential,
       SecurityContext securityContext) throws AuthorizationException {
 
-    LOGGER.info("authorize()");
     String name = credential.getPrincipal().getName();
-  
+
     Account account = securityContext.getIdentityManager().verify(
         name, credential);
     

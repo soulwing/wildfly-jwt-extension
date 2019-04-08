@@ -48,12 +48,12 @@ public class JwtServletExtension
 
   @Override
   public void start(StartContext startContext) {
-    LOGGER.info("started " + startContext.getController().getName());
+    LOGGER.info(startContext.getController().getName() + " started");
   }
 
   @Override
   public void stop(StopContext stopContext) {
-    LOGGER.info("stopped " + stopContext.getController().getName());
+    LOGGER.info(stopContext.getController().getName() + " stopped ");
   }
 
   @Override
