@@ -1,0 +1,5 @@
+/subsystem=jwt/transformer=FlattenCase:add
+/subsystem=jwt/transformer=DistinguishedToSimpleName:add(\
+    properties={ name-component=uugid })
+/subsystem=jwt/claim-transform=grp:add(\
+    transformers=[ FlattenCase, DistinguishedToSimpleName ])

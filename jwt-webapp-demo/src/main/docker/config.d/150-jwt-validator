@@ -1,0 +1,6 @@
+/subsystem=jwt/validator=default:add( \
+    issuer-url="${env.OAUTH_ISSUER_URL:https://oauth.localhost}", \
+    expiration-tolerance=90, \
+    issuer="${env.OAUTH_ISSUER_NAME:token-issuer}", \
+    audience="${env.OAUTH_SERVICE_NAME:test-service}", \
+    signature=public-key)

@@ -1,0 +1,6 @@
+/subsystem=jwt/trust-store=default-pem:add(provider=PEM, \
+  path="jwt-truststore.pem", relative-to="jboss.server.config.dir")
+/subsystem=jwt/signature=public-key:add(algorithm=RS256, \
+  certificate-subject-name=${env.OAUTH_CERT_SUBJECT_NAME:token-issuer}, \
+  check-certificate-revocation=false, \
+  trust-store=default-pem)

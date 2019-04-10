@@ -28,10 +28,125 @@
   <artifactId>jwt-webapp-demo</artifactId>
   <packaging>war</packaging>
 
-  <name>JWT Demo</name>
+  <name>JWT Webapp Demo</name>
   <description>
     This module builds a simple web application as a WAR file.
   </description>
+
+  <profiles>
+    <profile>
+      <id>docker-build</id>
+      <properties>
+        <docker.staging.directory>${project.build.directory}/docker-staging</docker.staging.directory>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-docker-resources</id>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <phase>prepare-package</phase>
+                <configuration>
+                  <outputDirectory>${docker.staging.directory}</outputDirectory>
+                  <overwrite>true</overwrite>
+                  <resources>
+                    <resource>
+                      <directory>src/main/docker</directory>
+                      <filtering>true</filtering>
+                      <includes>
+                        <include>**/Dockerfile</include>
+                        <include>**/docker-compose.yml</include>
+                      </includes>
+                    </resource>
+                    <resource>
+                      <directory>src/main/docker</directory>
+                      <filtering>false</filtering>
+                      <excludes>
+                        <exclude>**/Dockerfile</exclude>
+                        <exclude>**/docker-compose.yml</exclude>
+                      </excludes>
+                    </resource>
+                  </resources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-build-artifacts</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target name="copy-build-artifacts">
+                    <copy file="${project.build.directory}/${project.build.finalName}.${project.packaging}"
+                        tofile="${docker.staging.directory}/${project.artifactId}.${project.packaging}"/>
+                    <copy todir="${docker.staging.directory}">
+                      <fileset dir="${project.basedir}/../jwt-modules/target/jwt-modules-${project.version}-modules"/>
+                    </copy>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-dependencies</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>copy-dependencies</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${docker.staging.directory}/lib</outputDirectory>
+                  <overWriteIfNewer>true</overWriteIfNewer>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.spotify</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>build-image</id>
+                <goals>
+                  <goal>build</goal>
+                </goals>
+                <phase>package</phase>
+                <configuration>
+                  <imageName>soulwing/${project.artifactId}</imageName>
+                  <dockerDirectory>${docker.staging.directory}</dockerDirectory>
+                  <forceTags>true</forceTags>
+                  <imageTags>
+                    <imageTag>${project.version}</imageTag>
+                  </imageTags>
+                  <resources>
+                    <resource>
+                      <targetPath>/</targetPath>
+                      <directory>${project.build.directory}</directory>
+                      <include>classes/**</include>
+                    </resource>
+                  </resources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
   <dependencies>
     <dependency>
@@ -45,9 +160,17 @@
       <groupId>org.soulwing.jwt</groupId>
       <artifactId>jwt-extension-api</artifactId>
       <version>${project.version}</version>
+      <scope>provided</scope>
     </dependency>
 
+    <!-- Needed only because we're building a docker image in our build
+         that includes installing the extension module -->
+    <dependency>
+      <groupId>org.soulwing.jwt</groupId>
+      <artifactId>jwt-modules</artifactId>
+      <type>pom</type>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
-
 
 </project>

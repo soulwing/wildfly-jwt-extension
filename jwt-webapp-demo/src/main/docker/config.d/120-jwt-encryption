@@ -1,0 +1,9 @@
+/subsystem=jwt/key-pair-storage=encryption-key-storage:add( \
+    provider=LOCAL, module="org.soulwing.s2ks", properties={ \
+      storageDirectory="/run/secrets/keys", \
+      passwordFile=/run/secrets/key-storage-password })
+/subsystem=jwt/encryption=public-key:add( \
+    key-management-algorithm=RSA-OAEP-256, \
+    content-encryption-algorithm=A128CBC-HS256, \
+    compression-algorithm=DEF, \
+    key-pair-storage=encryption-key-storage)
