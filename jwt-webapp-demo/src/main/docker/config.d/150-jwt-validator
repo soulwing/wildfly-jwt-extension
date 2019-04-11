@@ -3,4 +3,4 @@
     expiration-tolerance=90, \
     issuer="${env.OAUTH_ISSUER_NAME:token-issuer}", \
     audience="${env.OAUTH_SERVICE_NAME:test-service}", \
-    signature=public-key)
+    signature=public-key, encryption=shared-key)
