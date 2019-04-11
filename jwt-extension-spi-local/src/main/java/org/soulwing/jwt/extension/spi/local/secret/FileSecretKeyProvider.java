@@ -24,8 +24,12 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.function.Function;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -41,8 +45,22 @@ import org.soulwing.jwt.extension.spi.SecretKeyProvider;
  */
 public class FileSecretKeyProvider implements SecretKeyProvider {
 
+  enum Encoding {
+    RAW,
+    BASE64;
+  }
+
+  private static final Map<Encoding, Function<byte[], byte[]>> DECODERS =
+      new HashMap<>();
+
+  static {
+    DECODERS.put(Encoding.RAW, b -> b);
+    DECODERS.put(Encoding.BASE64, b -> Base64.getDecoder().decode(b));
+  }
+
   static final String PROVIDER_NAME = "FILE";
   static final String PATH = "path";
+  static final String ENCODING = "encoding";
 
   @Override
   public String getName() {
@@ -57,13 +75,20 @@ public class FileSecretKeyProvider implements SecretKeyProvider {
         .map(Paths::get).orElseThrow(() -> new IllegalArgumentException(
             "`" + PATH + "` property is required"));
 
+    final Encoding encoding = Optional.ofNullable(properties.getProperty(ENCODING))
+        .map(String::toUpperCase)
+        .map(Encoding::valueOf)
+        .orElse(Encoding.RAW);
+
     if (!Files.exists(path)) {
       throw new NoSuchSecretKeyException(path + " does not exist");
     }
 
     try {
       try (final InputStream inputStream = new FileInputStream(path.toFile())) {
-        final byte[] bytes = InputStreamHelper.toByteArray(inputStream);
+        final byte[] bytes = DECODERS.get(encoding).apply(
+            InputStreamHelper.toByteArray(inputStream));
+
         if (bytes.length*Byte.SIZE < length) {
           throw new SecretException("file is smaller than specified bit length");
         }
