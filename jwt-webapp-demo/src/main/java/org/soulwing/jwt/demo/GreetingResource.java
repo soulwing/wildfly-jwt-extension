@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
@@ -42,7 +41,7 @@ public class GreetingResource {
 
   @GET
   @Produces(MediaType.TEXT_PLAIN)
-  public String generateGreeting(@QueryParam("name") String name,
+  public String generateGreeting(
       @Context HttpServletRequest request) {
     return greetingService.generateGreeting((UserPrincipal)
         request.getUserPrincipal());
