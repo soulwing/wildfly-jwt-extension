@@ -47,6 +47,8 @@ public class JwtAuthenticationMechanism implements AuthenticationMechanism {
 
   private static final String BEARER_AUTH_SCHEMA = "Bearer";
 
+  private static final String AUTH_QUERY_PARAM = "access_token";
+
   private static final String NOT_AUTHORIZED_MESSAGE =
       "identity manager does not recognize user '%s'";
 
@@ -117,10 +119,21 @@ public class JwtAuthenticationMechanism implements AuthenticationMechanism {
   }
 
   private String getToken(HttpServerExchange exchange) {
+    final String token = extractTokenFromHeader(exchange);
+    return (token != null) ? token : extractTokenFromQueryParam(exchange);
+  }
+
+  private String extractTokenFromHeader(HttpServerExchange exchange) {
     final String header = exchange.getRequestHeaders().getFirst(AUTH_HEADER);
     if (header == null) return null;
     if (!header.startsWith(BEARER_AUTH_SCHEMA + " ")) return null;
     return header.substring(BEARER_AUTH_SCHEMA.length()).trim();
+  }
+
+  private String extractTokenFromQueryParam(HttpServerExchange exchange) {
+    if (!exchange.getQueryParameters().containsKey(AUTH_QUERY_PARAM))
+      return null;
+    return exchange.getQueryParameters().get(AUTH_QUERY_PARAM).getFirst();
   }
 
   @Override
