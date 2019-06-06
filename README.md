@@ -10,9 +10,9 @@ declarative roles and constraints in `web.xml` and the `@RolesAllowed` bean
 annotation. 
 
 The main component is a standard JAAS `LoginModule` that participates in 
-Wildfly's security subsystem.  The login module validates a JWT bearer delegate
-and makes the claims specified in it available as roles in Wildfly's built
-in security stack. Additionally, it makes the claims from the JWT payload
+Wildfly's security subsystem.  The login module validates a JWT bearer token 
+delegate and makes the claims specified in it available as roles in Wildfly's 
+built in security stack. Additionally, it makes the claims from the JWT payload
 available to a deployed Java web application via a custom subtype of the
 `javax.security.Principal` interface.
 
