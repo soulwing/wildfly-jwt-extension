@@ -57,5 +57,4 @@ public interface UserPrincipal extends Principal {
    */
   Map<String, Claim> getClaims();
 
-
 }

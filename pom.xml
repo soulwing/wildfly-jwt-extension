@@ -128,11 +128,15 @@
     <version.org.bouncycastle>1.56</version.org.bouncycastle>
     <version.org.soulwing.jwt>1.6.1</version.org.soulwing.jwt>
     <version.org.soulwing.s2ks>1.2.1</version.org.soulwing.s2ks>
+    <version.com.amazonaws.api>1.11.634</version.com.amazonaws.api>
+    <version.javax.json>1.1</version.javax.json>
+    <version.com.fasterxml.jackson.dataformat.cbor>2.9.5</version.com.fasterxml.jackson.dataformat.cbor>
   </properties>
   <modules>
     <module>jwt-extension-api</module>
     <module>jwt-extension-spi</module>
     <module>jwt-extension-spi-local</module>
+    <module>jwt-extension-spi-aws</module>
     <module>jwt-provider</module>
     <module>jwt-key-storage</module>
     <module>jwt-subsystem</module>

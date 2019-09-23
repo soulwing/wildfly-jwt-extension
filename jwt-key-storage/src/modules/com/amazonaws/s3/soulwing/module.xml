@@ -1,5 +1,5 @@
 <!--
-  ~ File created on Apr 7, 2019
+  ~ File created on Sep 18, 2019
   ~
   ~ Copyright (c) 2019 Carl Harris, Jr
   ~ and others as noted
@@ -16,18 +16,17 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<module xmlns="urn:jboss:module:1.3" name="${module.name}"
-    slot="${module.slot}">
+<module xmlns="urn:jboss:module:1.3" name="com.amazonaws.s3" slot="soulwing">
 
   <resources>
-    <resource-root path="${project.build.finalName}.jar" />
+    <resource-root path="aws-java-sdk-s3-${version.com.amazonaws.api}.jar"/>
   </resources>
 
   <dependencies>
-    <module name="org.soulwing.jwt.api"/>
-    <module name="org.soulwing.jwt.spi"/>
-    <module name="org.bouncycastle" />
-    <module name="javax.api" />
+    <module name="javax.api"/>
+    <module name="com.amazonaws.core" slot="soulwing"/>
+    <module name="org.apache.commons.logging"/>
+    <module name="org.apache.httpcomponents"/>
   </dependencies>
 
 </module>

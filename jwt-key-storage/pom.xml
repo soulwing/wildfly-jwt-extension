@@ -30,14 +30,124 @@
   <name>Wildfly JWT Key Storage</name>
 
   <properties>
-    <module.name>org.soulwing.s2ks</module.name>
-    <module.slot>main</module.slot>
-    <module.path>org/soulwing/s2ks/${module.slot}</module.path>
-    <module.directory>${project.build.directory}/modules/${module.path}</module.directory>
+    <modules.staging.directory>${project.build.directory}/modules</modules.staging.directory>
   </properties>
 
   <build>
     <plugins>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-aws-core-dependencies</id>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <phase>prepare-package</phase>
+            <configuration>
+              <outputDirectory>${modules.staging.directory}/com/amazonaws/core/soulwing</outputDirectory>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>com.amazonaws</groupId>
+                  <artifactId>aws-java-sdk-core</artifactId>
+                  <version>${version.com.amazonaws.api}</version>
+                  <type>jar</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>com.amazonaws</groupId>
+                  <artifactId>jmespath-java</artifactId>
+                  <version>${version.com.amazonaws.api}</version>
+                  <type>jar</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>com.fasterxml.jackson.dataformat</groupId>
+                  <artifactId>jackson-dataformat-cbor</artifactId>
+                  <version>${version.com.fasterxml.jackson.dataformat.cbor}</version>
+                  <type>jar</type>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-aws-kms-dependencies</id>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <phase>prepare-package</phase>
+            <configuration>
+              <outputDirectory>${modules.staging.directory}/com/amazonaws/kms/soulwing</outputDirectory>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>com.amazonaws</groupId>
+                  <artifactId>aws-java-sdk-kms</artifactId>
+                  <version>${version.com.amazonaws.api}</version>
+                  <type>jar</type>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-aws-secretsmanager-dependencies</id>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <phase>prepare-package</phase>
+            <configuration>
+              <outputDirectory>${modules.staging.directory}/com/amazonaws/secretsmanager/soulwing</outputDirectory>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>com.amazonaws</groupId>
+                  <artifactId>aws-java-sdk-secretsmanager</artifactId>
+                  <version>${version.com.amazonaws.api}</version>
+                  <type>jar</type>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-aws-s3-dependencies</id>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <phase>prepare-package</phase>
+            <configuration>
+              <outputDirectory>${modules.staging.directory}/com/amazonaws/s3/soulwing</outputDirectory>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>com.amazonaws</groupId>
+                  <artifactId>aws-java-sdk-s3</artifactId>
+                  <version>${version.com.amazonaws.api}</version>
+                  <type>jar</type>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-s2ks-dependencies</id>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <phase>prepare-package</phase>
+            <configuration>
+              <outputDirectory>${modules.staging.directory}/org/soulwing/s2ks/main</outputDirectory>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.soulwing.s2ks</groupId>
+                  <artifactId>s2ks-api</artifactId>
+                  <version>${version.org.soulwing.s2ks}</version>
+                  <type>jar</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.soulwing.s2ks</groupId>
+                  <artifactId>s2ks-impl</artifactId>
+                  <version>${version.org.soulwing.s2ks}</version>
+                  <type>jar</type>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
@@ -46,19 +156,19 @@
             <goals>
               <goal>copy-resources</goal>
             </goals>
-            <phase>process-resources</phase>
+            <phase>prepare-package</phase>
             <configuration>
-              <outputDirectory>${module.directory}</outputDirectory>
+              <outputDirectory>${modules.staging.directory}</outputDirectory>
               <resources>
                 <resource>
-                  <directory>src/module</directory>
+                  <directory>src/modules</directory>
                   <filtering>true</filtering>
                   <includes>
                     <include>**/*.xml</include>
                   </includes>
                 </resource>
                 <resource>
-                  <directory>src/module</directory>
+                  <directory>src/modules</directory>
                   <filtering>false</filtering>
                   <excludes>
                     <exclude>**/*.xml</exclude>
@@ -69,33 +179,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-module-dependencies</id>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-            <phase>prepare-package</phase>
-            <configuration>
-              <excludeTransitive>true</excludeTransitive>
-              <outputDirectory>${module.directory}</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
-  <dependencies>
-    <dependency>
-      <groupId>org.soulwing.s2ks</groupId>
-      <artifactId>s2ks-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.soulwing.s2ks</groupId>
-      <artifactId>s2ks-impl</artifactId>
-    </dependency>
-  </dependencies>
-
 </project>
