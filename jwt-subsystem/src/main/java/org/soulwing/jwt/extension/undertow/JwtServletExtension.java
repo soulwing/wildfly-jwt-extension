@@ -69,6 +69,8 @@ public class JwtServletExtension
         JwtAuthenticationMechanism.MECHANISM_NAME,
         new JwtAuthenticationMechanism(
             deploymentInfo.getIdentityManager(), authenticationService));
+
+    deploymentInfo.addSecurityWrapper(new JwtAuthenticationContextInvalidator());
   }
 
 }
