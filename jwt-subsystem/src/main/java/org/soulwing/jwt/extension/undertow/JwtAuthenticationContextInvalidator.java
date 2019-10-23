@@ -20,6 +20,8 @@ package org.soulwing.jwt.extension.undertow;
 
 import static org.soulwing.jwt.extension.undertow.UndertowLogger.LOGGER;
 
+import java.util.Enumeration;
+
 import io.undertow.security.api.SecurityContext;
 import io.undertow.server.HandlerWrapper;
 import io.undertow.server.HttpHandler;
@@ -52,29 +54,44 @@ class JwtAuthenticationContextInvalidator
   public void handleRequest(HttpServerExchange exchange) throws Exception {
     delegate.handleRequest(exchange);
 
+    final HttpSessionImpl session = getHttpSession(exchange);
+    dumpSessionAttributes(session);
+
     final SecurityContext securityContext = exchange.getSecurityContext();
     if (securityContext != null && securityContext.isAuthenticated()) {
       securityContext.logout();
-      LOGGER.debug("authentication context logout completed");
+      LOGGER.info("authentication context logout completed");
     }
 
+    dumpSessionAttributes(session);
+
+//      if (session != null && !session.isInvalid()) {
+//        session.invalidate();
+//        LOGGER.info("session context invalidated");
+//      }
+//      else {
+//        LOGGER.info("no valid session context");
+//      }
+
+  }
+
+  private HttpSessionImpl getHttpSession(HttpServerExchange exchange) {
     final ServletRequestContext requestContext = ServletRequestContext.current();
-    if (requestContext != null) {
-      final HttpSessionImpl session =
-          requestContext.getCurrentServletContext().getSession(exchange, false);
+    if (requestContext == null) return null;
+    return requestContext.getCurrentServletContext().getSession(exchange, false);
+  }
 
-      if (session != null && !session.isInvalid()) {
-        session.invalidate();
-        LOGGER.debug("session context invalidated");
-      }
-      else {
-        LOGGER.debug("no valid session context");
-      }
+  private void dumpSessionAttributes(HttpSessionImpl session) {
+    if (session == null) {
+      LOGGER.debug("no session available");
+      return;
     }
-    else {
-      LOGGER.debug("not a servlet request");
+    final Enumeration<String> e = session.getAttributeNames();
+    while (e.hasMoreElements()) {
+      final String name = e.nextElement();
+      final Object value = session.getAttribute(name);
+      LOGGER.debug("session attribute: " + name + "=" + value);
     }
-
   }
 
 }
