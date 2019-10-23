@@ -123,14 +123,14 @@
     <version.org.jboss.modules>1.8.7.Final</version.org.jboss.modules>
     <version.org.wildfly>15.0.0.Final</version.org.wildfly>
     <version.org.wildfly.core>7.0.0.Final</version.org.wildfly.core>
-    <version.io.undertow>2.0.0.Final</version.io.undertow>
+    <version.io.undertow>2.0.23.Final</version.io.undertow>
     <version.com.auth0>3.7.0</version.com.auth0>
     <version.org.bouncycastle>1.56</version.org.bouncycastle>
     <version.org.soulwing.jwt>1.6.1</version.org.soulwing.jwt>
     <version.org.soulwing.s2ks>1.2.1</version.org.soulwing.s2ks>
     <version.com.amazonaws.api>1.11.634</version.com.amazonaws.api>
     <version.javax.json>1.1</version.javax.json>
-    <version.com.fasterxml.jackson.dataformat.cbor>2.9.5</version.com.fasterxml.jackson.dataformat.cbor>
+    <version.com.fasterxml.jackson.dataformat.cbor>2.9.10</version.com.fasterxml.jackson.dataformat.cbor>
   </properties>
   <modules>
     <module>jwt-extension-api</module>
