@@ -20,22 +20,18 @@ package org.soulwing.jwt.extension.undertow;
 
 import static org.soulwing.jwt.extension.undertow.UndertowLogger.LOGGER;
 
-import java.util.Enumeration;
-
 import io.undertow.security.api.SecurityContext;
 import io.undertow.server.HandlerWrapper;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.servlet.handlers.ServletRequestContext;
-import io.undertow.servlet.spec.HttpSessionImpl;
 
 /**
- * A {@link HandlerWrapper} that invalids authentication context after each
+ * A {@link HandlerWrapper} that invalids the authentication context after each
  * request.
  * <p>
  * When using bearer authentication, we want to validate the bearer token
  * for each no request. To ensure that this happens, we log out of the security
- * context and invalidate the session context.
+ * context.
  *
  * @author Carl Harris
  */
@@ -53,44 +49,11 @@ class JwtAuthenticationContextInvalidator
   @Override
   public void handleRequest(HttpServerExchange exchange) throws Exception {
     delegate.handleRequest(exchange);
-
-    final HttpSessionImpl session = getHttpSession(exchange);
-    dumpSessionAttributes(session);
-
     final SecurityContext securityContext = exchange.getSecurityContext();
     if (securityContext != null && securityContext.isAuthenticated()) {
+      final String name = securityContext.getAuthenticatedAccount().getPrincipal().getName();
       securityContext.logout();
-      LOGGER.info("authentication context logout completed");
-    }
-
-    dumpSessionAttributes(session);
-
-//      if (session != null && !session.isInvalid()) {
-//        session.invalidate();
-//        LOGGER.info("session context invalidated");
-//      }
-//      else {
-//        LOGGER.info("no valid session context");
-//      }
-
-  }
-
-  private HttpSessionImpl getHttpSession(HttpServerExchange exchange) {
-    final ServletRequestContext requestContext = ServletRequestContext.current();
-    if (requestContext == null) return null;
-    return requestContext.getCurrentServletContext().getSession(exchange, false);
-  }
-
-  private void dumpSessionAttributes(HttpSessionImpl session) {
-    if (session == null) {
-      LOGGER.debug("no session available");
-      return;
-    }
-    final Enumeration<String> e = session.getAttributeNames();
-    while (e.hasMoreElements()) {
-      final String name = e.nextElement();
-      final Object value = session.getAttribute(name);
-      LOGGER.debug("session attribute: " + name + "=" + value);
+      LOGGER.debug("user " + name + " logged out");
     }
   }
 
