@@ -65,12 +65,14 @@ public class JwtServletExtension
       ServletContext servletContext) {
 
     deploymentInfo.clearLoginMethods();
+
     deploymentInfo.addFirstAuthenticationMechanism(
         JwtAuthenticationMechanism.MECHANISM_NAME,
         new JwtAuthenticationMechanism(
             deploymentInfo.getIdentityManager(), authenticationService));
 
-    deploymentInfo.addSecurityWrapper(new JwtAuthenticationContextInvalidator());
+    deploymentInfo.addOuterHandlerChainWrapper(
+        new JwtAuthenticationContextInvalidator());
   }
 
 }
