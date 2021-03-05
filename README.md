@@ -56,7 +56,7 @@ TODO
 * For the `RS384` algorihm, a 3072-bit key RSA key pair is recommended
 * For the `RS512` algorihm, a 4096-bit key RSA key pair is recommended
 
-The commands below produce a 2048-bit RSA key pair is produced for `RSA256`.
+The commands below produce a 2048-bit RSA key pair for `RSA256`.
 
 ```bash
 openssl genrsa -out rsa-private.pem 2048
