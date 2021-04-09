@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.soulwing</groupId>
     <artifactId>soulwing-parent</artifactId>
-    <version>11</version>
+    <version>20</version>
   </parent>
   <groupId>org.soulwing.jwt</groupId>
   <artifactId>wildfly-jwt-extension</artifactId>
@@ -131,7 +131,7 @@
     <version.io.undertow>2.0.23.Final</version.io.undertow>
     <version.com.auth0>3.7.0</version.com.auth0>
     <version.org.bouncycastle>1.56</version.org.bouncycastle>
-    <version.org.soulwing.jwt>1.6.1</version.org.soulwing.jwt>
+    <version.org.soulwing.jwt>1.6.2</version.org.soulwing.jwt>
     <version.org.soulwing.s2ks>1.2.1</version.org.soulwing.s2ks>
     <version.com.amazonaws.api>1.11.634</version.com.amazonaws.api>
     <version.javax.json>1.1</version.javax.json>
