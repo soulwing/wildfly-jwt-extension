@@ -128,7 +128,7 @@
     <version.org.jboss.modules>1.8.7.Final</version.org.jboss.modules>
     <version.org.wildfly>15.0.0.Final</version.org.wildfly>
     <version.org.wildfly.core>7.0.0.Final</version.org.wildfly.core>
-    <version.io.undertow>2.0.23.Final</version.io.undertow>
+    <version.io.undertow>2.2.15.Final</version.io.undertow>
     <version.com.auth0>3.7.0</version.com.auth0>
     <version.org.bouncycastle>1.56</version.org.bouncycastle>
     <version.org.soulwing.jwt>1.6.2</version.org.soulwing.jwt>
