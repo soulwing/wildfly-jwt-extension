@@ -30,7 +30,7 @@
   <name>Wildfly JWT Provider Library</name>
 
   <properties>
-    <version.org.jose4j>0.6.5</version.org.jose4j>
+    <version.org.jose4j>0.9.3</version.org.jose4j>
     <module.name>org.soulwing.jwt.provider</module.name>
     <module.slot>main</module.slot>
     <module.path>org/soulwing/jwt/provider/${module.slot}</module.path>
